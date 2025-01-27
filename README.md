@@ -10,3 +10,6 @@
 ## Látványdizájn
 
 ![tankok terv](https://github.com/sukebenedek/TankyShooty/blob/main/plan.png?raw=true)
+![tankok terv](https://github.com/sukebenedek/TankyShooty/blob/main/l%C3%A1tv%C3%A1nyterv%20tanky%20shooty.png?raw=true)
+
+
