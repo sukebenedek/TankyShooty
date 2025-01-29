@@ -361,3 +361,41 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+AppName/bin/Release/AppName.exe
+AppName/bin/Release/AppName.odb
+AppName/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+AppName/obj/Debug/AppName.exe
+AppName/obj/Debug/AppName.g.resources
+AppName/obj/Debug/AppName.pdb
+AppName/obj/Debug/AppName MarkupCompile.cache
+AppName/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+AppName/obj/Release/AppName.csproj.FileListAbsolute.txt
+AppName/obj/Release/AppName.exe
+AppName/obi/Release/AppName.g.resources
+AppName/obj/Release/AppName.pdb
+AppName/obi/Release/Views/SomeView.bam|
+AppName/bin/Debug/btest1
+AppName/bin/Debug/btest2
+AppName/bin/Debug/GalaSoft.MvvmLight.dll
+AppName/bin/Debug/GalaSoft.MvvmLight.Extras.dll
+AppName/bin/Debug/GalaSoft.MvvmLight.Extras.pdb
+AppName/bin/Debug/GalaSoft.MvvmLight.pdb
+AppName/bin/Debug/GalaSoft.MvvmLight.Platform.dll
+AppName/bin/Debug/GalaSoft.MwvmLight.Platform.pdb
+AppName/bin/Debug/GalaSoft.MwvmLight.Platform.xml
+AppName/bin/Debug/Microsoft.Practices.ServiceLocation.dll
+AppName/bin/Debug/Microsoft.Practices.ServiceLocation.pdb
+AppName/bin/Debug/System.Windows.Interactivity.dll
+AppName/bin/Debug/AppName.exe
+AppName/bin/Debug/AppName.exe.CodeAnalysisLog (UserName-PC's conflicted copy 2017-11-06).xml
+AppName/bin/Debug/AppName.exe.CodeAnalysisLog.xml
+AppName/bin/Debug/AppName.exe.config
+AppName/bin/Debug/AppName.exe.lastcodeanalysissucceeded
+AppName/bin/Debug/AppName.pdb
+AppName/bin/Debug/AppName.vshost.exe
+AppName/bin/Debug/AppName.vshost.exe.config
+AppName/bin/Debug/AppName.vshost.exe.manifest
+AppName/bin/Release/AppName.vshost.exe
+AppName/bin/Release/AppName.vshost.exe.config
+AppName/bin/Release/AppName.vshost.exe.manifest
