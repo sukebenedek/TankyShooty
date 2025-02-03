@@ -10,6 +10,8 @@
         <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
             <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="40" Canvas.Top="40"/>
             <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="410" Canvas.Top="410"/>
+
+            <Label Name="scoreText" Content="0 - 0" Foreground="White" FontSize="30" Canvas.Left="215" Canvas.Top="400"/>
         </Canvas>
     </Grid>
 </Window>
