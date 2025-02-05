@@ -20,5 +20,28 @@ namespace TankyShooty
         {
             InitializeComponent();
         }
+
+        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            GameWindow gameWindow = new GameWindow();
+            gameWindow.Closed += (s, e) => this.Show();
+            gameWindow.Show();
+            this.Hide();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            LobbyWindow lobbyWindow = new LobbyWindow();
+            lobbyWindow.Closed += (s, e) => this.Show();
+            lobbyWindow.Show();
+            this.Hide();
+        }
     }
 }
