@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -29,6 +30,12 @@ namespace TankyShooty
         int playerSpeed = 6;
         int rotateSpeed = 5;
         int bulletSpeed = 15;
+
+        int startXPlayer1 = 410;
+        int startYPlayer1 = 410;
+        int startXPlayer2 = 40;
+        int startYPlayer2 = 40;
+
         List<System.Windows.Shapes.Rectangle> itemRemover = new List<System.Windows.Shapes.Rectangle>();
         List<int> scores = new List<int>(2);
         List<Bullet> bullets = new List<Bullet>();
@@ -45,15 +52,24 @@ namespace TankyShooty
 
             MyCanvas.Focus();
 
-            //ImageBrush player1Image = new ImageBrush();
-            //player1Image.ImageSource = new BitmapImage(new Uri("url here"));
-            //Player1.Fill = playerImgae();
+            
+
+            
+
+            ImageBrush imageBrush = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[0]))
+            };
+
+
+            Player1.Fill = imageBrush;
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
+            
             //rotation.Content = rectangleRotatePlayer1.Angle + " - " + Math.Sin(rectangleRotatePlayer1.Angle) + " - " + Math.Cos(rectangleRotatePlayer1.Angle);
             //scoreText.Content = $"{scores[0]} - {scores[1]}";
             rotation.Content = bullets.Count;
@@ -136,8 +152,25 @@ namespace TankyShooty
 
                 Canvas.SetLeft(bullet.rectangle, currentLeft + deltaX);
                 Canvas.SetTop(bullet.rectangle, currentTop + deltaY);
+                bullet.hitbox = new Rect(Canvas.GetLeft(bullet.rectangle), Canvas.GetTop(bullet.rectangle), 5, 5);
 
-                
+            }
+
+            foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
+            {
+                foreach (var bullet in bullets)
+                {
+                    if((string)bullet.rectangle.Tag == "bulletPlayer1")
+                    {
+                        if (player2Hitbox.IntersectsWith(bullet.hitbox)) {
+                            Canvas.SetLeft(Player1, startXPlayer1);
+                            Canvas.SetLeft(Player1, startYPlayer1);
+                            Canvas.SetLeft(Player2, startXPlayer2);
+                            Canvas.SetLeft(Player2, startYPlayer2);
+                            //scores[1]++;
+                        }
+                    }
+                }
             }
         }
 
@@ -267,9 +300,11 @@ namespace TankyShooty
                 Canvas.SetLeft(newBulletPlayer1, Canvas.GetLeft(Player1) + Player2.Width / 2);
                 Canvas.SetTop(newBulletPlayer1, Canvas.GetTop(Player1));
 
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, Canvas.GetTop(Player1), 5, 5);
+
                 MyCanvas.Children.Add(newBulletPlayer1);
 
-                bullets.Add(new Bullet(newBulletPlayer1, rectangleRotatePlayer1.Angle, Canvas.GetLeft(Player1) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer1, bulletHitBox, rectangleRotatePlayer1.Angle, Canvas.GetLeft(Player1) + Player2.Width / 2, 0));
             }
 
             if (e.Key == Key.R)
@@ -283,12 +318,16 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
+
+
                 Canvas.SetLeft(newBulletPlayer2, Canvas.GetLeft(Player2) + Player2.Width / 2);
                 Canvas.SetTop(newBulletPlayer2, Canvas.GetTop(Player2));
 
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player2) + Player2.Width / 2, Canvas.GetTop(Player2), 5, 5);
+
                 MyCanvas.Children.Add(newBulletPlayer2);
 
-                bullets.Add(new Bullet(newBulletPlayer2, rectangleRotatePlayer2.Angle, Canvas.GetLeft(Player2) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer2, bulletHitBox, rectangleRotatePlayer2.Angle, Canvas.GetLeft(Player2) + Player2.Width / 2, 0));
             }
         }
     }
