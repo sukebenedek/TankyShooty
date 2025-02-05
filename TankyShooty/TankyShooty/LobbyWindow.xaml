@@ -38,7 +38,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="5">
-                        <Image x:Name="PlayerImg1" Width="250" Height="150"/>
+                        <Image Width="250" Height="150" Source="{Binding}"/>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -59,7 +59,7 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="5">
-                        <Image x:Name="PlayerImg2" Width="250" Height="150"/>
+                        <Image Width="250" Height="150" Source="{Binding}"/>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>

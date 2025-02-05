@@ -24,7 +24,7 @@ namespace TankyShooty
         private List<string> imagePaths = new List<string>();
         private int player_1_Index = 0;
         private int player_2_Index = 0;
-        private string imageFolderPath = @"img/";
+        private string imageFolderPath = System.IO.Path.GetFullPath("img/");
         public LobbyWindow()
         {
             InitializeComponent();
@@ -44,12 +44,15 @@ namespace TankyShooty
                         imagePaths.Add(file);
                     }
                 }
-                if (imagePaths.Count > 0) DisplayPlayer1(player_1_Index);
-                if (imagePaths.Count > 1) DisplayPlayer2(player_2_Index);
-            }
-            else
-            {
-                MessageBox.Show("Image folder not found!");
+                
+                CarouselListBox1.ItemsSource = imagePaths;
+                CarouselListBox2.ItemsSource = imagePaths;
+
+                if (imagePaths.Count > 0) 
+                {
+                    CarouselListBox1.SelectedIndex = player_1_Index;
+                    CarouselListBox2.SelectedIndex = player_2_Index;
+                }
             }
         }
 
@@ -57,7 +60,7 @@ namespace TankyShooty
         {
             if (index >= 0 && index < imagePaths.Count)
             {
-                PlayerImg1.Source = new BitmapImage(new Uri(imagePaths[index]));
+                CarouselListBox1.SelectedIndex = index;
                 player_1_Index = index;
             }
         }
@@ -66,36 +69,40 @@ namespace TankyShooty
         {
             if (index >= 0 && index < imagePaths.Count)
             {
-                PlayerImg2.Source = new BitmapImage(new Uri(imagePaths[index]));
+                CarouselListBox2.SelectedIndex = index;
                 player_2_Index = index;
             }
         }
 
         private void Previous_Click1(object sender, RoutedEventArgs e)
         {
-            if (currentIndex > 0)
+            if (player_1_Index > 0)
             {
-                DisplayImage(currentIndex - 1);
+                DisplayPlayer1(player_1_Index - 1);
             }
         }
 
         private void Next_Click1(object sender, RoutedEventArgs e)
         {
-            if (currentIndex < imagePaths.Count - 1)
+            if (player_1_Index < imagePaths.Count - 1)
             {
-                DisplayImage(currentIndex + 1);
+                DisplayPlayer1(player_1_Index + 1);
             }
         }
         private void Previous_Click2(object sender, RoutedEventArgs e)
         {
-            if (CarouselListBox2.SelectedIndex > 0)
-                CarouselListBox2.SelectedIndex--;
+            if (player_2_Index > 0)
+            {
+                DisplayPlayer2(player_2_Index - 1);
+            }
         }
 
         private void Next_Click2(object sender, RoutedEventArgs e)
         {
-            if (CarouselListBox2.SelectedIndex < Images.Count - 1)
-                CarouselListBox2.SelectedIndex++;
+            if (player_2_Index < imagePaths.Count - 1)
+            {
+                DisplayPlayer2(player_2_Index + 1);
+            }
         }
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
@@ -106,9 +113,11 @@ namespace TankyShooty
 
         private void BtnReady_Click(object sender, RoutedEventArgs e)
         {
+            LobbyWindow lobbyWindow = new LobbyWindow();
             GameWindow gameWindow = new GameWindow();
-            this.Hide();
+            gameWindow.Closed += (s, e) => this.Show();
             gameWindow.Show();
+            this.Hide();
         }
     }
 }
