@@ -36,8 +36,11 @@ namespace TankyShooty
         int startXPlayer2 = 40;
         int startYPlayer2 = 40;
 
+        string player1Name = "Player1";
+        string player2Name = "Player2";
+
         List<System.Windows.Shapes.Rectangle> itemRemover = new List<System.Windows.Shapes.Rectangle>();
-        List<int> scores = new List<int>(2);
+        List<int> scores = [0, 0];
         List<Bullet> bullets = new List<Bullet>();
 
         Rect player1Hitbox;
@@ -50,29 +53,32 @@ namespace TankyShooty
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
-            MyCanvas.Focus();
-
-            
-
-            
+            MyCanvas.Focus();      
 
             ImageBrush imageBrush = new ImageBrush
             {
                 ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[0]))
             };
-
-
             Player1.Fill = imageBrush;
+
+            ImageBrush imageBrush2 = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[2]))
+            };
+            Player2.Fill = imageBrush2;
+
+            player1NameDisplay.Content = player1Name;
+            player2NameDisplay.Content = player2Name;
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
-            
-            //rotation.Content = rectangleRotatePlayer1.Angle + " - " + Math.Sin(rectangleRotatePlayer1.Angle) + " - " + Math.Cos(rectangleRotatePlayer1.Angle);
-            //scoreText.Content = $"{scores[0]} - {scores[1]}";
-            rotation.Content = bullets.Count;
+
+            rotation.Content = rectangleRotatePlayer1.Angle + " - " + Math.Sin(rectangleRotatePlayer1.Angle) + " - " + Math.Cos(rectangleRotatePlayer1.Angle);
+            scoreText.Content = $"{scores[0]} - {scores[1]}";
+            //rotation.Content = bullets.Count;
 
             if (moveForwardPlayer1 == true)
             {
@@ -137,7 +143,7 @@ namespace TankyShooty
             foreach (var bullet in bullets)
             {
 
-                
+
                 double angle = bullet.starterAngle;
 
                 double angleInRadians = angle * (Math.PI / 180);
@@ -154,24 +160,32 @@ namespace TankyShooty
                 Canvas.SetTop(bullet.rectangle, currentTop + deltaY);
                 bullet.hitbox = new Rect(Canvas.GetLeft(bullet.rectangle), Canvas.GetTop(bullet.rectangle), 5, 5);
 
+                if ((string)bullet.rectangle.Tag == "bulletPlayer1")
+                {
+                    if (player2Hitbox.IntersectsWith(bullet.hitbox))
+                    {
+                        ResetPlayers();
+                        scores[1]++;
+                    }  
+                }
+                if ((string)bullet.rectangle.Tag == "bulletPlayer2")
+                {
+                    if (player1Hitbox.IntersectsWith(bullet.hitbox))
+                    {
+                        ResetPlayers();
+                        scores[0]++;
+                    }
+
+                }
+
+
             }
 
-            foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
-            {
-                foreach (var bullet in bullets)
-                {
-                    if((string)bullet.rectangle.Tag == "bulletPlayer1")
-                    {
-                        if (player2Hitbox.IntersectsWith(bullet.hitbox)) {
-                            Canvas.SetLeft(Player1, startXPlayer1);
-                            Canvas.SetLeft(Player1, startYPlayer1);
-                            Canvas.SetLeft(Player2, startXPlayer2);
-                            Canvas.SetLeft(Player2, startYPlayer2);
-                            //scores[1]++;
-                        }
-                    }
-                }
-            }
+            
+                
+                   
+                
+            
         }
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
@@ -207,6 +221,16 @@ namespace TankyShooty
         {
             if (direction_positive) rotateTransform.Angle += rotateSpeed;
             else rotateTransform.Angle -= rotateSpeed;
+        }
+
+        private void ResetPlayers() 
+        {
+            Canvas.SetLeft(Player1, startXPlayer1);
+            Canvas.SetTop(Player1, startYPlayer1);
+            rectangleRotatePlayer1.Angle = 0;
+            Canvas.SetLeft(Player2, startXPlayer2);
+            Canvas.SetTop(Player2, startYPlayer2);
+            rectangleRotatePlayer2.Angle = 0;
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -297,14 +321,14 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
-                Canvas.SetLeft(newBulletPlayer1, Canvas.GetLeft(Player1) + Player2.Width / 2);
-                Canvas.SetTop(newBulletPlayer1, Canvas.GetTop(Player1));
+                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, Canvas.GetTop(Player1), 5, 5);
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer1);
 
-                bullets.Add(new Bullet(newBulletPlayer1, bulletHitBox, rectangleRotatePlayer1.Angle, Canvas.GetLeft(Player1) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer1, bulletHitBox, rectangleRotatePlayer1.Angle, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0], GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]));
             }
 
             if (e.Key == Key.R)
@@ -320,15 +344,34 @@ namespace TankyShooty
 
 
 
-                Canvas.SetLeft(newBulletPlayer2, Canvas.GetLeft(Player2) + Player2.Width / 2);
-                Canvas.SetTop(newBulletPlayer2, Canvas.GetTop(Player2));
+                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player2) + Player2.Width / 2, Canvas.GetTop(Player2), 5, 5);
+                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer2);
 
-                bullets.Add(new Bullet(newBulletPlayer2, bulletHitBox, rectangleRotatePlayer2.Angle, Canvas.GetLeft(Player2) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer2, bulletHitBox, rectangleRotatePlayer2.Angle, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0], GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]));
             }
+        }
+
+        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 30.0, double height = 30.0, double angle = 0)
+        {
+            // Convert angle to radians
+            double radians = angle * Math.PI / 180;
+
+            // Center of the rectangle
+            double centerX = x + width / 2;
+            double centerY = y + height / 2;
+
+            // Half the width of the rectangle (front edge direction)
+            double halfWidth = width / 2;
+
+            // The position of the front edge midpoint after rotation
+            double frontEdgeX = centerX + halfWidth * Math.Cos(radians);
+            double frontEdgeY = centerY + halfWidth * Math.Sin(radians);
+
+            return [frontEdgeX, frontEdgeY];
         }
     }
 }
