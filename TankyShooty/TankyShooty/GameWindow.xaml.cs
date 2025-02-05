@@ -164,7 +164,8 @@ namespace TankyShooty
                 {
                     if (player2Hitbox.IntersectsWith(bullet.hitbox))
                     {
-                        ResetPlayers();
+                        RemoveBullets();
+                        ResetPlayers(-90.0);
                         scores[1]++;
                     }  
                 }
@@ -172,20 +173,15 @@ namespace TankyShooty
                 {
                     if (player1Hitbox.IntersectsWith(bullet.hitbox))
                     {
-                        ResetPlayers();
+                        RemoveBullets();
+                        ResetPlayers(90.0);
                         scores[0]++;
                     }
 
                 }
 
-
             }
-
-            
-                
-                   
-                
-            
+  
         }
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
@@ -223,14 +219,23 @@ namespace TankyShooty
             else rotateTransform.Angle -= rotateSpeed;
         }
 
-        private void ResetPlayers() 
+        private void ResetPlayers(double angle) 
         {
             Canvas.SetLeft(Player1, startXPlayer1);
             Canvas.SetTop(Player1, startYPlayer1);
-            rectangleRotatePlayer1.Angle = 0;
+            rectangleRotatePlayer1.Angle = angle;
             Canvas.SetLeft(Player2, startXPlayer2);
             Canvas.SetTop(Player2, startYPlayer2);
-            rectangleRotatePlayer2.Angle = 0;
+            rectangleRotatePlayer2.Angle = angle;
+        }
+
+        private void RemoveBullets()
+        {
+            foreach (var bullet in bullets)
+            {
+                MyCanvas.Children.Remove(bullet.rectangle);
+                
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
