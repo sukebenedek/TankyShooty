@@ -8,14 +8,14 @@
         Title="GameWindow" Height="500" Width="500" ResizeMode="NoResize">
     <Grid>
         <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
-            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="410" Canvas.Top="410">
+            <Rectangle Name="Player1" Height="30" Width="30" Fill="Blue" Canvas.Left="410" Canvas.Top="410">
                 <Rectangle.RenderTransform>
-                    <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="25" CenterY="25"/>
+                    <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="15" CenterY="15"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="40" Canvas.Top="40">
+            <Rectangle Name="Player2" Height="30" Width="30" Fill="Red" Canvas.Left="40" Canvas.Top="40">
                 <Rectangle.RenderTransform>
-                    <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="25" CenterY="25"/>
+                    <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="15" CenterY="15"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
 
