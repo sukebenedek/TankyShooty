@@ -8,10 +8,20 @@
         Title="GameWindow" Height="500" Width="500" ResizeMode="NoResize">
     <Grid>
         <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
-            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="40" Canvas.Top="40"/>
-            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="410" Canvas.Top="410"/>
+            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="410" Canvas.Top="410">
+                <Rectangle.RenderTransform>
+                    <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="25" CenterY="25"/>
+                </Rectangle.RenderTransform>
+            </Rectangle>
+            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="40" Canvas.Top="40">
+                <Rectangle.RenderTransform>
+                    <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="25" CenterY="25"/>
+                </Rectangle.RenderTransform>
+            </Rectangle>
 
             <Label Name="scoreText" Content="0 - 0" Foreground="White" FontSize="30" Canvas.Left="215" Canvas.Top="400"/>
+            <Label Name="rotation" Content="" Foreground="White" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Canvas>
+        
     </Grid>
 </Window>
