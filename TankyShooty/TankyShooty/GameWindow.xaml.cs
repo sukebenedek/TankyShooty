@@ -39,9 +39,10 @@ namespace TankyShooty
         string player1Name = "Player1";
         string player2Name = "Player2";
 
-        List<System.Windows.Shapes.Rectangle> itemRemover = new List<System.Windows.Shapes.Rectangle>();
+        
         List<int> scores = [0, 0];
         List<Bullet> bullets = new List<Bullet>();
+        List<Bullet> bulletsToRemove = new List<Bullet>();
 
         Rect player1Hitbox;
         Rect player2Hitbox;
@@ -165,8 +166,9 @@ namespace TankyShooty
                     if (player2Hitbox.IntersectsWith(bullet.hitbox))
                     {
                         RemoveBullets();
-                        ResetPlayers(-90.0);
+                        ResetPlayers(-90.0, 90.0);
                         scores[1]++;
+                        
                     }  
                 }
                 if ((string)bullet.rectangle.Tag == "bulletPlayer2")
@@ -174,14 +176,20 @@ namespace TankyShooty
                     if (player1Hitbox.IntersectsWith(bullet.hitbox))
                     {
                         RemoveBullets();
-                        ResetPlayers(90.0);
+                        ResetPlayers(-90.0, 90.0);
                         scores[0]++;
+                        
                     }
 
                 }
 
             }
-  
+            foreach (var bullet in bulletsToRemove)
+            {
+                bullets.Remove(bullet);
+            }
+
+
         }
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
@@ -219,23 +227,26 @@ namespace TankyShooty
             else rotateTransform.Angle -= rotateSpeed;
         }
 
-        private void ResetPlayers(double angle) 
+        private void ResetPlayers(double angle, double angle2) 
         {
             Canvas.SetLeft(Player1, startXPlayer1);
             Canvas.SetTop(Player1, startYPlayer1);
             rectangleRotatePlayer1.Angle = angle;
             Canvas.SetLeft(Player2, startXPlayer2);
             Canvas.SetTop(Player2, startYPlayer2);
-            rectangleRotatePlayer2.Angle = angle;
+            rectangleRotatePlayer2.Angle = angle2;
         }
 
         private void RemoveBullets()
         {
+
+            
             foreach (var bullet in bullets)
             {
                 MyCanvas.Children.Remove(bullet.rectangle);
-                
+                bulletsToRemove.Add(bullet);
             }
+            
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
