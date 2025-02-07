@@ -46,6 +46,9 @@ namespace TankyShooty
 
         Rect player1Hitbox;
         Rect player2Hitbox;
+
+
+
         public GameWindow()
         {
             InitializeComponent();
@@ -77,7 +80,7 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
 
-            rotation.Content = rectangleRotatePlayer1.Angle + " - " + Math.Sin(rectangleRotatePlayer1.Angle) + " - " + Math.Cos(rectangleRotatePlayer1.Angle);
+            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{scores[0]} - {scores[1]}";
             //rotation.Content = bullets.Count;
 
@@ -191,6 +194,8 @@ namespace TankyShooty
 
 
         }
+
+        
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
@@ -388,6 +393,30 @@ namespace TankyShooty
             double frontEdgeY = centerY + halfWidth * Math.Sin(radians);
 
             return [frontEdgeX, frontEdgeY];
+        }
+
+        private string GetRectangleQuadrant(double angle)
+        {
+            // Normalize the angle to be between 0 and 360 degrees
+            double normalizedAngle = (angle % 360 + 360) % 360;
+
+            // Define the quadrant based on the angle range
+            if (normalizedAngle >= 0 && normalizedAngle < 90)
+            {
+                return "Bottom Right";
+            }
+            else if (normalizedAngle >= 90 && normalizedAngle < 180)
+            {
+                return "Bottom Left";
+            }
+            else if (normalizedAngle >= 180 && normalizedAngle < 270)
+            {
+                return "Top Left";
+            }
+            else
+            {
+                return "Top Right";
+            }
         }
     }
 }
