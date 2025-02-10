@@ -60,7 +60,7 @@ namespace TankyShooty
         {
             if (index >= 0 && index < imagePaths.Count)
             {
-                CarouselListBox1.SelectedIndex = index;
+               // imgPlayer_1.Source = new BitmapImage(new Uri(imagePaths[index], UriKind.Absolute));
                 player_1_Index = index;
             }
         }
@@ -118,6 +118,11 @@ namespace TankyShooty
             gameWindow.Closed += (s, e) => this.Show();
             gameWindow.Show();
             this.Hide();
+            string filePath = "nevek.txt";
+
+            string content = $"{Player_1.Text};{Player_2.Text}";
+
+            File.WriteAllText(filePath, content);
         }
     }
 }
