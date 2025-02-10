@@ -9,6 +9,7 @@
         ResizeMode="CanResize"
         WindowStartupLocation="Manual"
         Left="10" Top="10"
+        Loaded="Window_Loaded"
         >
     <Grid>
         <Canvas Name="MyCanvas" Focusable="True" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
