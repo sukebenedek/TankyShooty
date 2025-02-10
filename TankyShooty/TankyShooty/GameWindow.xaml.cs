@@ -31,10 +31,11 @@ namespace TankyShooty
         int rotateSpeed = 5;
         int bulletSpeed = 15;
 
-        int startXPlayer1 = 410;
-        int startYPlayer1 = 410;
-        int startXPlayer2 = 40;
-        int startYPlayer2 = 40;
+        public Random random = new Random();
+        int startXPlayer1;
+        int startYPlayer1;
+        int startXPlayer2;
+        int startYPlayer2;
 
         string player1Name = "Player1";
         string player2Name = "Player2";
@@ -49,7 +50,8 @@ namespace TankyShooty
 
         public static int cellWidth = 6;
         public static int cellHeight = 6;
-        public Random random = new Random();
+        public static int height;
+        public static int width;
         public int unvisited = 0;
         public int cellSize;
         public List<Wall> walls = new List<Wall>();
@@ -63,8 +65,14 @@ namespace TankyShooty
         {
             InitializeComponent();
 
+            cellSize = 150;
+            startXPlayer1 = random.Next(1, cellWidth/2) * cellSize / 2; //nem létezik??
+            startYPlayer1 = random.Next(1, cellHeight/2) * cellSize / 2; //nem létezik??
+            startXPlayer2 = random.Next(cellHeight / 2, cellWidth) * cellSize / 2; //nem létezik??
+            startYPlayer2 = random.Next(cellHeight / 2, cellHeight) * cellSize / 2; //nem létezik??
+
             gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-            gameTimer.Tick += GameLoop;
+            gameTimer.Tick += GameLoop!;
             gameTimer.Start();
 
             MyCanvas.Focus();      
@@ -81,12 +89,32 @@ namespace TankyShooty
             };
             Player2.Fill = imageBrush2;
 
-            player1NameDisplay.Content = player1Name;
-            player2NameDisplay.Content = player2Name;
+            //player1NameDisplay.Content = player1Name;
+            //player2NameDisplay.Content = player2Name;
+            //scoreText.Content = $"{scores[0]} - {scores[1]}";
+            this.Title = $"{player1Name} - {scores[0]}, {player2Name} - {scores[1]}";
 
-            cellSize = 150;
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            height = Convert.ToInt32(MyCanvas.ActualHeight);
+            width = Convert.ToInt32(MyCanvas.ActualWidth);
             //MyCanvas.Width = cellWidth * cellSize;
             //this.Width = MyCanvas.Width;
+
+            ImageBrush backgroundBrush = new ImageBrush();
+            backgroundBrush.ImageSource = new BitmapImage(new Uri("img/backgroung.jpg", UriKind.Relative));
+            backgroundBrush.TileMode = TileMode.Tile;
+            backgroundBrush.Viewport = new Rect(0, 0, 626, 566); // Adjust tile size
+            backgroundBrush.ViewportUnits = BrushMappingMode.Absolute;
+            backgroundBrush.Stretch = Stretch.None;
+
+            //MyCanvas.Background = backgroundBrush;     
+
+
+
             for (int i = 0; i < cellWidth; i++)
             {
                 for (int j = 0; j < cellHeight; j++)
@@ -115,80 +143,15 @@ namespace TankyShooty
                 }
             }
 
+            walls.Add(new Wall(0, 0 , wallThickness, height, (byte)0));
+            walls.Add(new Wall(0, 0 , width, wallThickness, (byte)0));
+            walls.Add(new Wall(width - wallThickness, 0 , width, height, (byte)0));
+            walls.Add(new Wall(0, height - wallThickness , width, height, (byte)0));
+
             walls.ForEach(w => w.Draw(MyCanvas));
 
         }
 
-        void AldousBroder()
-        {
-            int[] p = { 0, 0 };
-            visit(p);
-
-            while (unvisited < cellWidth * cellHeight)
-            {
-                var next = pickNeighbor(p);
-                if (!isvisited(next))
-                {
-                    visit(next);
-                    removeWall(p, next);
-                }
-                p = next;
-            }
-        }
-
-        int[] pickNeighbor(int[] p)
-        {
-            int i = p[0], j = p[1];
-            int[,] neighbors = new int[,] {
-                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
-            };
-            return pickValid(neighbors);
-        }
-
-        void visit(int[] p)
-        {
-            visited[p[0], p[1]] = true;
-            unvisited++;
-        }
-
-        int[] pick(int[,] neighbors)
-        {
-            int n = random.Next(4);
-            return new int[] { neighbors[n, 0], neighbors[n, 1] };
-        }
-
-        bool checkValid(int[] point)
-        {
-            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
-        }
-
-        int[] pickValid(int[,] neighbors)
-        {
-            var n = pick(neighbors);
-            bool b = checkValid(n);
-            while (!b)
-            {
-                n = pick(neighbors);
-                b = checkValid(n);
-            }
-            return n;
-        }
-
-        bool isvisited(int[] p)
-        {
-            return visited[p[0], p[1]];
-        }
-
-        void removeWall(int[] p1, int[] p2)
-        {
-            int dx = p2[0] - p1[0];
-            int dy = p2[1] - p1[1];
-
-            if (dx == -1) vwalls[p1[0], p1[1]] = false;
-            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
-            if (dy == -1) hwalls[p1[0], p1[1]] = false;
-            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
-        }
 
         private void GameLoop(object sender, EventArgs e)
         {
@@ -197,14 +160,11 @@ namespace TankyShooty
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
 
             //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
-            scoreText.Content = $"{scores[0]} - {scores[1]}";
             //rotation.Content = bullets.Count;
 
             if (moveForwardPlayer1 == true)
             {
-
                 MovePlayer(Player1, rectangleRotatePlayer1, true);
-
             }
             if(moveBackwardPlayer1 == true)
             {
@@ -348,6 +308,7 @@ namespace TankyShooty
             if (direction_positive) rotateTransform.Angle += rotateSpeed;
             else rotateTransform.Angle -= rotateSpeed;
         }
+
 
         private void ResetPlayers(double angle, double angle2) 
         {
@@ -534,6 +495,79 @@ namespace TankyShooty
             {
                 return "Top Right";
             }
+        }
+
+
+
+        void AldousBroder()
+        {
+            int[] p = { 0, 0 };
+            visit(p);
+
+            while (unvisited < cellWidth * cellHeight)
+            {
+                var next = pickNeighbor(p);
+                if (!isvisited(next))
+                {
+                    visit(next);
+                    removeWall(p, next);
+                }
+                p = next;
+            }
+        }
+
+        int[] pickNeighbor(int[] p)
+        {
+            int i = p[0], j = p[1];
+            int[,] neighbors = new int[,] {
+                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
+            };
+            return pickValid(neighbors);
+        }
+
+        void visit(int[] p)
+        {
+            visited[p[0], p[1]] = true;
+            unvisited++;
+        }
+
+        int[] pick(int[,] neighbors)
+        {
+            int n = random.Next(4);
+            return new int[] { neighbors[n, 0], neighbors[n, 1] };
+        }
+
+        bool checkValid(int[] point)
+        {
+            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
+        }
+
+        int[] pickValid(int[,] neighbors)
+        {
+            var n = pick(neighbors);
+            bool b = checkValid(n);
+            while (!b)
+            {
+                n = pick(neighbors);
+                b = checkValid(n);
+            }
+            return n;
+        }
+
+        bool isvisited(int[] p)
+        {
+            return visited[p[0], p[1]];
+        }
+
+        void removeWall(int[] p1, int[] p2)
+        {
+            int dx = p2[0] - p1[0];
+            int dy = p2[1] - p1[1];
+
+            if (dx == -1) vwalls[p1[0], p1[1]] = false;
+            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
+            if (dy == -1) hwalls[p1[0], p1[1]] = false;
+            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
         }
     }
 }
