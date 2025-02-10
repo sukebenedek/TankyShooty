@@ -31,10 +31,10 @@ namespace TankyShooty
         int rotateSpeed = 5;
         int bulletSpeed = 15;
 
-        int startXPlayer1 = 410;
-        int startYPlayer1 = 410;
-        int startXPlayer2 = 40;
-        int startYPlayer2 = 40;
+        int startXPlayer1 = 900;
+        int startYPlayer1 = 900;
+        int startXPlayer2 = 25;
+        int startYPlayer2 = 10;
 
         string player1Name = "Player1";
         string player2Name = "Player2";
@@ -67,17 +67,25 @@ namespace TankyShooty
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
-            MyCanvas.Focus();      
+            MyCanvas.Focus();
+
+            ImageBrush bg = new ImageBrush();
+            bg.ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Canvas-Background.jpg"));
+            bg.TileMode = TileMode.None;
+            //bg.Viewport = new Rect(0, 0, 0.15, 0.15);
+            //bg.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+            bg.Stretch = Stretch.Fill;
+            MyCanvas.Background = bg;
 
             ImageBrush imageBrush = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[0]))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Spongebob.jpg"))
             };
             Player1.Fill = imageBrush;
 
             ImageBrush imageBrush2 = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[2]))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/images.jpg"))
             };
             Player2.Fill = imageBrush2;
 
@@ -194,7 +202,7 @@ namespace TankyShooty
         {
 
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
-            player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
+            player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
             //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{scores[0]} - {scores[1]}";
@@ -313,6 +321,7 @@ namespace TankyShooty
         }
 
         
+      
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
@@ -459,10 +468,10 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
-                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
-                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]);
+                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer1);
 
@@ -482,10 +491,10 @@ namespace TankyShooty
 
 
 
-                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
-                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]);
+                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
+                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer2);
 
@@ -493,7 +502,7 @@ namespace TankyShooty
             }
         }
 
-        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 30.0, double height = 30.0, double angle = 0)
+        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 50.0, double height = 50.0, double angle = 0)
         {
             // Convert angle to radians
             double radians = angle * Math.PI / 180;
