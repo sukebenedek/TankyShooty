@@ -5,9 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TankyShooty"
         mc:Ignorable="d"
-        Title="GameWindow" Height="500" Width="500" ResizeMode="NoResize">
+        Title="GameWindow" Height="950" Width="920" 
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        Left="10" Top="10"
+        >
     <Grid>
-        <Canvas Name="MyCanvas" Focusable="True" Background="Black" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
+        <Canvas Name="MyCanvas" Focusable="True" Background="#FFB8EDaD" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
             <Rectangle Name="Player1" Height="30" Width="30" Fill="Blue" Canvas.Left="410" Canvas.Top="410">
                 <Rectangle.RenderTransform>
                     <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="15" CenterY="15"/>
@@ -19,12 +23,12 @@
                 </Rectangle.RenderTransform>
             </Rectangle>
 
-            <Label Name="scoreText" Content="0 - 0" Foreground="White" FontSize="30" Canvas.Left="215" Canvas.Top="372" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label Name="player1NameDisplay" Content="Player1" Foreground="White" FontSize="15" Canvas.Left="250" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label Name="player2NameDisplay" Content="Player2" Foreground="White" FontSize="15" Canvas.Left="187" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Name="scoreText" Content="0 - 0" Foreground="Black" FontSize="30" Canvas.Left="215" Canvas.Top="372" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Name="player1NameDisplay" Content="Player1" Foreground="Black" FontSize="15" Canvas.Left="250" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Name="player2NameDisplay" Content="Player2" Foreground="Black" FontSize="15" Canvas.Left="187" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
 
-            <Label Name="rotation" Content="" Foreground="White" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label Name="rotation" Content="" Foreground="Black" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
         </Canvas>
 

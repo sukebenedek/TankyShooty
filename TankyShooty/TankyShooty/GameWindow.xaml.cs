@@ -47,6 +47,16 @@ namespace TankyShooty
         Rect player1Hitbox;
         Rect player2Hitbox;
 
+        public static int cellWidth = 6;
+        public static int cellHeight = 6;
+        public Random random = new Random();
+        public int unvisited = 0;
+        public int cellSize;
+        public List<Wall> walls = new List<Wall>();
+        bool[,] visited = new bool[cellWidth, cellHeight];
+        bool[,] vwalls = new bool[cellWidth, cellHeight];
+        bool[,] hwalls = new bool[cellWidth, cellHeight];
+        public int wallThickness = 15;
 
 
         public GameWindow()
@@ -73,14 +83,120 @@ namespace TankyShooty
 
             player1NameDisplay.Content = player1Name;
             player2NameDisplay.Content = player2Name;
+
+            cellSize = 150;
+            //MyCanvas.Width = cellWidth * cellSize;
+            //this.Width = MyCanvas.Width;
+            for (int i = 0; i < cellWidth; i++)
+            {
+                for (int j = 0; j < cellHeight; j++)
+                {
+                    vwalls[i, j] = true;
+                    hwalls[i, j] = true;
+                    visited[i, j] = false;
+                }
+            }
+            AldousBroder();
+
+
+            for (int i = 0; i < cellWidth; i++)
+            {
+                for (int j = 0; j < cellHeight; j++)
+                {
+                    if (vwalls[i, j] && i != 0)
+                    {
+                        walls.Add(new Wall((i) * cellSize, j * cellSize, (i) * cellSize + wallThickness, (j + 1) * cellSize + wallThickness));
+                    }
+
+                    if (hwalls[i, j] && j != 0)
+                    {
+                        walls.Add(new Wall(i * cellSize, (j) * cellSize, (i + 1) * cellSize, (j) * cellSize + wallThickness));
+                    }
+                }
+            }
+
+            walls.ForEach(w => w.Draw(MyCanvas));
+
+        }
+
+        void AldousBroder()
+        {
+            int[] p = { 0, 0 };
+            visit(p);
+
+            while (unvisited < cellWidth * cellHeight)
+            {
+                var next = pickNeighbor(p);
+                if (!isvisited(next))
+                {
+                    visit(next);
+                    removeWall(p, next);
+                }
+                p = next;
+            }
+        }
+
+        int[] pickNeighbor(int[] p)
+        {
+            int i = p[0], j = p[1];
+            int[,] neighbors = new int[,] {
+                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
+            };
+            return pickValid(neighbors);
+        }
+
+        void visit(int[] p)
+        {
+            visited[p[0], p[1]] = true;
+            unvisited++;
+        }
+
+        int[] pick(int[,] neighbors)
+        {
+            int n = random.Next(4);
+            return new int[] { neighbors[n, 0], neighbors[n, 1] };
+        }
+
+        bool checkValid(int[] point)
+        {
+            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
+        }
+
+        int[] pickValid(int[,] neighbors)
+        {
+            var n = pick(neighbors);
+            bool b = checkValid(n);
+            while (!b)
+            {
+                n = pick(neighbors);
+                b = checkValid(n);
+            }
+            return n;
+        }
+
+        bool isvisited(int[] p)
+        {
+            return visited[p[0], p[1]];
+        }
+
+        void removeWall(int[] p1, int[] p2)
+        {
+            int dx = p2[0] - p1[0];
+            int dy = p2[1] - p1[1];
+
+            if (dx == -1) vwalls[p1[0], p1[1]] = false;
+            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
+            if (dy == -1) hwalls[p1[0], p1[1]] = false;
+            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
+
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
 
-            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{scores[0]} - {scores[1]}";
             //rotation.Content = bullets.Count;
 
@@ -121,6 +237,7 @@ namespace TankyShooty
             {
                 RotatePlayer(rectangleRotatePlayer2, true, rotateSpeed);
             }
+
 
             //foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
             //{
