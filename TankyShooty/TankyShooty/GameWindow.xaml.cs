@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -29,12 +30,35 @@ namespace TankyShooty
         int playerSpeed = 6;
         int rotateSpeed = 5;
         int bulletSpeed = 15;
-        List<System.Windows.Shapes.Rectangle> itemRemover = new List<System.Windows.Shapes.Rectangle>();
-        List<int> scores = new List<int>(2);
+
+        int startXPlayer1 = 410;
+        int startYPlayer1 = 410;
+        int startXPlayer2 = 40;
+        int startYPlayer2 = 40;
+
+        string player1Name = "Player1";
+        string player2Name = "Player2";
+
+        
+        List<int> scores = [0, 0];
         List<Bullet> bullets = new List<Bullet>();
+        List<Bullet> bulletsToRemove = new List<Bullet>();
 
         Rect player1Hitbox;
         Rect player2Hitbox;
+
+        public static int cellWidth = 6;
+        public static int cellHeight = 6;
+        public Random random = new Random();
+        public int unvisited = 0;
+        public int cellSize;
+        public List<Wall> walls = new List<Wall>();
+        bool[,] visited = new bool[cellWidth, cellHeight];
+        bool[,] vwalls = new bool[cellWidth, cellHeight];
+        bool[,] hwalls = new bool[cellWidth, cellHeight];
+        public int wallThickness = 15;
+
+
         public GameWindow()
         {
             InitializeComponent();
@@ -43,20 +67,138 @@ namespace TankyShooty
             gameTimer.Tick += GameLoop;
             gameTimer.Start();
 
-            MyCanvas.Focus();
+            MyCanvas.Focus();      
 
-            //ImageBrush player1Image = new ImageBrush();
-            //player1Image.ImageSource = new BitmapImage(new Uri("url here"));
-            //Player1.Fill = playerImgae();
+            ImageBrush imageBrush = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[0]))
+            };
+            Player1.Fill = imageBrush;
+
+            ImageBrush imageBrush2 = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[2]))
+            };
+            Player2.Fill = imageBrush2;
+
+            player1NameDisplay.Content = player1Name;
+            player2NameDisplay.Content = player2Name;
+
+            cellSize = 150;
+            //MyCanvas.Width = cellWidth * cellSize;
+            //this.Width = MyCanvas.Width;
+            for (int i = 0; i < cellWidth; i++)
+            {
+                for (int j = 0; j < cellHeight; j++)
+                {
+                    vwalls[i, j] = true;
+                    hwalls[i, j] = true;
+                    visited[i, j] = false;
+                }
+            }
+            AldousBroder();
+
+
+            for (int i = 0; i < cellWidth; i++)
+            {
+                for (int j = 0; j < cellHeight; j++)
+                {
+                    if (vwalls[i, j] && i != 0)
+                    {
+                        walls.Add(new Wall((i) * cellSize, j * cellSize, (i) * cellSize + wallThickness, (j + 1) * cellSize + wallThickness));
+                    }
+
+                    if (hwalls[i, j] && j != 0)
+                    {
+                        walls.Add(new Wall(i * cellSize, (j) * cellSize, (i + 1) * cellSize, (j) * cellSize + wallThickness));
+                    }
+                }
+            }
+
+            walls.ForEach(w => w.Draw(MyCanvas));
+
+        }
+
+        void AldousBroder()
+        {
+            int[] p = { 0, 0 };
+            visit(p);
+
+            while (unvisited < cellWidth * cellHeight)
+            {
+                var next = pickNeighbor(p);
+                if (!isvisited(next))
+                {
+                    visit(next);
+                    removeWall(p, next);
+                }
+                p = next;
+            }
+        }
+
+        int[] pickNeighbor(int[] p)
+        {
+            int i = p[0], j = p[1];
+            int[,] neighbors = new int[,] {
+                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
+            };
+            return pickValid(neighbors);
+        }
+
+        void visit(int[] p)
+        {
+            visited[p[0], p[1]] = true;
+            unvisited++;
+        }
+
+        int[] pick(int[,] neighbors)
+        {
+            int n = random.Next(4);
+            return new int[] { neighbors[n, 0], neighbors[n, 1] };
+        }
+
+        bool checkValid(int[] point)
+        {
+            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
+        }
+
+        int[] pickValid(int[,] neighbors)
+        {
+            var n = pick(neighbors);
+            bool b = checkValid(n);
+            while (!b)
+            {
+                n = pick(neighbors);
+                b = checkValid(n);
+            }
+            return n;
+        }
+
+        bool isvisited(int[] p)
+        {
+            return visited[p[0], p[1]];
+        }
+
+        void removeWall(int[] p1, int[] p2)
+        {
+            int dx = p2[0] - p1[0];
+            int dy = p2[1] - p1[1];
+
+            if (dx == -1) vwalls[p1[0], p1[1]] = false;
+            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
+            if (dy == -1) hwalls[p1[0], p1[1]] = false;
+            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
         }
 
         private void GameLoop(object sender, EventArgs e)
         {
+
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
-            //rotation.Content = rectangleRotatePlayer1.Angle + " - " + Math.Sin(rectangleRotatePlayer1.Angle) + " - " + Math.Cos(rectangleRotatePlayer1.Angle);
-            //scoreText.Content = $"{scores[0]} - {scores[1]}";
-            rotation.Content = bullets.Count;
+
+            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            scoreText.Content = $"{scores[0]} - {scores[1]}";
+            //rotation.Content = bullets.Count;
 
             if (moveForwardPlayer1 == true)
             {
@@ -96,6 +238,7 @@ namespace TankyShooty
                 RotatePlayer(rectangleRotatePlayer2, true, rotateSpeed);
             }
 
+
             //foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
             //{
             //    if (x is System.Windows.Shapes.Rectangle && (string)x.Tag == "bulletPlayer1")
@@ -121,7 +264,7 @@ namespace TankyShooty
             foreach (var bullet in bullets)
             {
 
-                
+
                 double angle = bullet.starterAngle;
 
                 double angleInRadians = angle * (Math.PI / 180);
@@ -136,10 +279,40 @@ namespace TankyShooty
 
                 Canvas.SetLeft(bullet.rectangle, currentLeft + deltaX);
                 Canvas.SetTop(bullet.rectangle, currentTop + deltaY);
+                bullet.hitbox = new Rect(Canvas.GetLeft(bullet.rectangle), Canvas.GetTop(bullet.rectangle), 5, 5);
 
-                
+                if ((string)bullet.rectangle.Tag == "bulletPlayer1")
+                {
+                    if (player2Hitbox.IntersectsWith(bullet.hitbox))
+                    {
+                        RemoveBullets();
+                        ResetPlayers(-90.0, 90.0);
+                        scores[1]++;
+                        
+                    }  
+                }
+                if ((string)bullet.rectangle.Tag == "bulletPlayer2")
+                {
+                    if (player1Hitbox.IntersectsWith(bullet.hitbox))
+                    {
+                        RemoveBullets();
+                        ResetPlayers(-90.0, 90.0);
+                        scores[0]++;
+                        
+                    }
+
+                }
+
             }
+            foreach (var bullet in bulletsToRemove)
+            {
+                bullets.Remove(bullet);
+            }
+
+
         }
+
+        
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
@@ -174,6 +347,28 @@ namespace TankyShooty
         {
             if (direction_positive) rotateTransform.Angle += rotateSpeed;
             else rotateTransform.Angle -= rotateSpeed;
+        }
+
+        private void ResetPlayers(double angle, double angle2) 
+        {
+            Canvas.SetLeft(Player1, startXPlayer1);
+            Canvas.SetTop(Player1, startYPlayer1);
+            rectangleRotatePlayer1.Angle = angle;
+            Canvas.SetLeft(Player2, startXPlayer2);
+            Canvas.SetTop(Player2, startYPlayer2);
+            rectangleRotatePlayer2.Angle = angle2;
+        }
+
+        private void RemoveBullets()
+        {
+
+            
+            foreach (var bullet in bullets)
+            {
+                MyCanvas.Children.Remove(bullet.rectangle);
+                bulletsToRemove.Add(bullet);
+            }
+            
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -264,12 +459,14 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
-                Canvas.SetLeft(newBulletPlayer1, Canvas.GetLeft(Player1) + Player2.Width / 2);
-                Canvas.SetTop(newBulletPlayer1, Canvas.GetTop(Player1));
+                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]);
+
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer1);
 
-                bullets.Add(new Bullet(newBulletPlayer1, rectangleRotatePlayer1.Angle, Canvas.GetLeft(Player1) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer1, bulletHitBox, rectangleRotatePlayer1.Angle, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0], GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]));
             }
 
             if (e.Key == Key.R)
@@ -283,12 +480,59 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
-                Canvas.SetLeft(newBulletPlayer2, Canvas.GetLeft(Player2) + Player2.Width / 2);
-                Canvas.SetTop(newBulletPlayer2, Canvas.GetTop(Player2));
+
+
+                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]);
+
+                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer2);
 
-                bullets.Add(new Bullet(newBulletPlayer2, rectangleRotatePlayer2.Angle, Canvas.GetLeft(Player2) + Player2.Width / 2, 0));
+                bullets.Add(new Bullet(newBulletPlayer2, bulletHitBox, rectangleRotatePlayer2.Angle, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0], GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]));
+            }
+        }
+
+        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 30.0, double height = 30.0, double angle = 0)
+        {
+            // Convert angle to radians
+            double radians = angle * Math.PI / 180;
+
+            // Center of the rectangle
+            double centerX = x + width / 2;
+            double centerY = y + height / 2;
+
+            // Half the width of the rectangle (front edge direction)
+            double halfWidth = width / 2;
+
+            // The position of the front edge midpoint after rotation
+            double frontEdgeX = centerX + halfWidth * Math.Cos(radians);
+            double frontEdgeY = centerY + halfWidth * Math.Sin(radians);
+
+            return [frontEdgeX, frontEdgeY];
+        }
+
+        private string GetRectangleQuadrant(double angle)
+        {
+            // Normalize the angle to be between 0 and 360 degrees
+            double normalizedAngle = (angle % 360 + 360) % 360;
+
+            // Define the quadrant based on the angle range
+            if (normalizedAngle >= 0 && normalizedAngle < 90)
+            {
+                return "Bottom Right";
+            }
+            else if (normalizedAngle >= 90 && normalizedAngle < 180)
+            {
+                return "Bottom Left";
+            }
+            else if (normalizedAngle >= 180 && normalizedAngle < 270)
+            {
+                return "Top Left";
+            }
+            else
+            {
+                return "Top Right";
             }
         }
     }
