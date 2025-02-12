@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Data;
 
 namespace TankyShooty
 {
@@ -38,6 +39,7 @@ namespace TankyShooty
                     Width = (int)Math.Abs(x2 - x1),
                     Height = (int)Math.Abs(y2 - y1),
                     Fill = color,
+                    Tag = "Wall"
                 };  
 
                 Canvas.SetLeft(rect, x1);
@@ -49,6 +51,11 @@ namespace TankyShooty
         public void Draw(Canvas cvs)
         {
             cvs.Children.Add(Rect);
+        }
+
+        public void Remove(Canvas cvs)
+        {
+            cvs.Children.Remove(Rect);
         }
     }
 }

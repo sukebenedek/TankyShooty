@@ -60,6 +60,8 @@ namespace TankyShooty
         bool[,] hwalls = new bool[cellWidth, cellHeight];
         public int wallThickness = 15;
 
+        List<Wall> wallsToRemove = new List<Wall>();
+
 
         public GameWindow()
         {
@@ -257,8 +259,9 @@ namespace TankyShooty
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
                         scores[1]++;
-                        
-                    }  
+                        Die();
+
+                    }
                 }
                 if ((string)bullet.rectangle.Tag == "bulletPlayer2")
                 {
@@ -267,7 +270,8 @@ namespace TankyShooty
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
                         scores[0]++;
-                        
+                        Die();
+
                     }
 
                 }
@@ -277,12 +281,27 @@ namespace TankyShooty
             {
                 bullets.Remove(bullet);
             }
+            foreach (var wall in wallsToRemove)
+            {
+                walls.Remove(wall);
+            }
 
 
         }
 
-        
-      
+        private void Die()
+        {
+            //foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
+            //{
+            //    if (x is Wall)
+            //    {
+            //        wallsToRemove.Add(x);
+
+            //    }
+            //}
+        }
+
+
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
