@@ -22,6 +22,7 @@ namespace TankyShooty
     /// <summary>
     /// Interaction logic for GameWindow.xaml
     /// </summary>
+    /// 
     public partial class GameWindow : Window
     {
         DispatcherTimer gameTimer = new DispatcherTimer();
@@ -41,7 +42,7 @@ namespace TankyShooty
 
         public static Random random = new Random();
 
-        List<int> scores = [0, 0];
+        
         List<Bullet> bullets = new List<Bullet>();
         List<Bullet> bulletsToRemove = new List<Bullet>();
 
@@ -50,15 +51,16 @@ namespace TankyShooty
 
         public static int cellWidth = 6;
         public static int cellHeight = 6;
+        public int wallThickness = 15;
         public static int height;
         public static int width;
-        public int unvisited = 0;
         public int cellSize;
+
         public List<Wall> walls = new List<Wall>();
+        public int unvisited = 0;
         bool[,] visited = new bool[cellWidth, cellHeight];
         bool[,] vwalls = new bool[cellWidth, cellHeight];
         bool[,] hwalls = new bool[cellWidth, cellHeight];
-        public int wallThickness = 15;
 
         List<Wall> wallsToRemove = new List<Wall>();
 
@@ -169,8 +171,8 @@ namespace TankyShooty
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
             rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
-            scoreText.Content = $"{scores[0]} - {scores[1]}";
-            this.Title = $"{player1Name} - {scores[0]}, {player2Name} - {scores[1]}";
+            scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
+            this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
 
             if (moveForwardPlayer1 == true)
@@ -258,7 +260,7 @@ namespace TankyShooty
                     {
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
-                        scores[1]++;
+                        Score.Scores[1]++;
                         Die();
 
                     }
@@ -269,7 +271,7 @@ namespace TankyShooty
                     {
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
-                        scores[0]++;
+                        Score.Scores[0]++;
                         Die();
 
                     }
@@ -291,14 +293,11 @@ namespace TankyShooty
 
         private void Die()
         {
-            //foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
-            //{
-            //    if (x is Wall)
-            //    {
-            //        wallsToRemove.Add(x);
 
-            //    }
-            //}
+            var newWindow = new GameWindow();
+            this.Hide();
+            this.Close();
+            newWindow.Show();
         }
 
 

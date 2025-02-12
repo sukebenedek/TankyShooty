@@ -14,8 +14,14 @@ namespace TankyShooty
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public static class Score
     {
+        public static List<int> Scores { get; } = new List<int> { 0, 0 };
+    }
+public partial class MainWindow : Window
+    {
+        public static List<int> scores = new List<int> { 0, 0 };
+
         public MainWindow()
         {
             InitializeComponent();
