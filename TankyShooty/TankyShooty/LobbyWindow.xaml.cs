@@ -23,8 +23,8 @@ namespace TankyShooty
 
         private void LoadImages()
         {
-            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg")
-                                      .Concat(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg"))
+            string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/" + "/players/", "*.jpg")
+                                      .Concat(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/" + "/players/", "*.jpg"))
                                       .ToArray();
 
             ImagePaths = files.ToList();
@@ -82,7 +82,7 @@ namespace TankyShooty
             this.Hide();
 
             string filePath = "nevek.txt";
-            string content = $"{Player_1.Text};{Player1Img}\n{Player_2.Text};{Player2Img}";
+            string content = $"{Player_1.Text};{Player1Img.Source}\n{Player_2.Text};{Player2Img.Source}";
             File.WriteAllText(filePath, content);
         }
     }
