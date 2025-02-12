@@ -155,10 +155,10 @@ namespace TankyShooty
                 }
             }
 
-            walls.Add(new Wall(0, 0 , wallThickness, height, (byte)0));
-            walls.Add(new Wall(0, 0 , width, wallThickness, (byte)0));
-            walls.Add(new Wall(width - wallThickness, 0 , width, height, (byte)0));
-            walls.Add(new Wall(0, height - wallThickness , width, height, (byte)0));
+            walls.Add(new Wall(0, 0 , wallThickness, height));
+            walls.Add(new Wall(0, 0 , width, wallThickness));
+            walls.Add(new Wall(width - wallThickness, 0 , width, height));
+            walls.Add(new Wall(0, height - wallThickness , width, height));
 
             walls.ForEach(w => w.Draw(MyCanvas));
 
@@ -182,7 +182,11 @@ namespace TankyShooty
 
             if (moveForwardPlayer1 == true)
             {
-                MovePlayer(Player1, rectangleRotatePlayer1, true);
+                if(!CheckCollision())
+                {
+                    MovePlayer(Player1, rectangleRotatePlayer1, true);
+                }
+                
             }
 
             // Only move backward if there's no collision
@@ -395,15 +399,8 @@ namespace TankyShooty
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Up) 
-            {
-                if(!CheckCollision()) 
-                {
-                    moveForwardPlayer1 = true;
-                }
-                else
-                {
-                    moveForwardPlayer1 = false;
-                }
+            {              
+                moveForwardPlayer1 = true;
                 
             }
             if (e.Key == Key.Down) 
