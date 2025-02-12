@@ -29,7 +29,7 @@
 
 
             <Label Name="rotation" Content="" Foreground="Black" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Label x:Name="scoreText" Content="0 - 0" Foreground="Black" FontSize="70" Canvas.Left="424" Canvas.Top="874" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="100"/>
+            <Label Name="scoreText" Content="0 - 0" Foreground="Black" FontSize="70" Canvas.Left="424" Canvas.Top="874" HorizontalAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="100"/>
 
         </Canvas>
 

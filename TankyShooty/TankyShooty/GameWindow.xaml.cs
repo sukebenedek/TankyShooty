@@ -39,7 +39,8 @@ namespace TankyShooty
         string player1Name = "Player1";
         string player2Name = "Player2";
 
-        
+        public static Random random = new Random();
+
         List<int> scores = [0, 0];
         List<Bullet> bullets = new List<Bullet>();
         List<Bullet> bulletsToRemove = new List<Bullet>();
@@ -65,10 +66,10 @@ namespace TankyShooty
             InitializeComponent();
 
             cellSize = 150;
-            startXPlayer1 = random.Next(1, cellWidth/2) * cellSize / 2; //nem létezik??
-            startYPlayer1 = random.Next(1, cellHeight/2) * cellSize / 2; //nem létezik??
-            startXPlayer2 = random.Next(cellHeight / 2, cellWidth) * cellSize / 2; //nem létezik??
-            startYPlayer2 = random.Next(cellHeight / 2, cellHeight) * cellSize / 2; //nem létezik??
+            //startXPlayer1 = random.Next(1, cellWidth/2) * cellSize / 2; //nem létezik??
+            //startYPlayer1 = random.Next(1, cellHeight/2) * cellSize / 2; //nem létezik??
+            //startXPlayer2 = random.Next(cellHeight / 2, cellWidth) * cellSize / 2; //nem létezik??
+            //startYPlayer2 = random.Next(cellHeight / 2, cellHeight) * cellSize / 2; //nem létezik??
 
             gameTimer.Interval = TimeSpan.FromMilliseconds(20);
             gameTimer.Tick += GameLoop!;
@@ -96,10 +97,9 @@ namespace TankyShooty
             };
             Player2.Fill = imageBrush2;
 
-            //player1NameDisplay.Content = player1Name;
-            //player2NameDisplay.Content = player2Name;
-            //scoreText.Content = $"{scores[0]} - {scores[1]}";
-            this.Title = $"{player1Name} - {scores[0]}, {player2Name} - {scores[1]}";
+            player1NameDisplay.Content = player1Name;
+            player2NameDisplay.Content = player2Name;
+            
 
 
         }
@@ -111,12 +111,12 @@ namespace TankyShooty
             //MyCanvas.Width = cellWidth * cellSize;
             //this.Width = MyCanvas.Width;
 
-            ImageBrush backgroundBrush = new ImageBrush();
-            backgroundBrush.ImageSource = new BitmapImage(new Uri("img/backgroung.jpg", UriKind.Relative));
-            backgroundBrush.TileMode = TileMode.Tile;
-            backgroundBrush.Viewport = new Rect(0, 0, 626, 566); // Adjust tile size
-            backgroundBrush.ViewportUnits = BrushMappingMode.Absolute;
-            backgroundBrush.Stretch = Stretch.None;
+            //ImageBrush backgroundBrush = new ImageBrush();
+            //backgroundBrush.ImageSource = new BitmapImage(new Uri("img/backgroung.jpg", UriKind.Relative));
+            //backgroundBrush.TileMode = TileMode.Tile;
+            //backgroundBrush.Viewport = new Rect(0, 0, 626, 566); // Adjust tile size
+            //backgroundBrush.ViewportUnits = BrushMappingMode.Absolute;
+            //backgroundBrush.Stretch = Stretch.None;
 
             //MyCanvas.Background = backgroundBrush;     
 
@@ -166,7 +166,9 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
-            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            scoreText.Content = $"{scores[0]} - {scores[1]}";
+            this.Title = $"{player1Name} - {scores[0]}, {player2Name} - {scores[1]}";
             //rotation.Content = bullets.Count;
 
             if (moveForwardPlayer1 == true)
