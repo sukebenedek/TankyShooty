@@ -61,6 +61,7 @@ namespace TankyShooty
         bool[,] visited = new bool[cellWidth, cellHeight];
         bool[,] vwalls = new bool[cellWidth, cellHeight];
         bool[,] hwalls = new bool[cellWidth, cellHeight];
+        bool canMoveForward = true;
 
         List<Wall> wallsToRemove = new List<Wall>();
 
@@ -170,23 +171,33 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
-            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
             this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
+
+
+
+
 
             if (moveForwardPlayer1 == true)
             {
                 MovePlayer(Player1, rectangleRotatePlayer1, true);
             }
-            if(moveBackwardPlayer1 == true)
+
+            // Only move backward if there's no collision
+            if (moveBackwardPlayer1 == true)
             {
                 MovePlayer(Player1, rectangleRotatePlayer1, false);
             }
-            if (rotateLeftPlayer1 == true) 
+
+            // Rotate left (collision doesn't need to be checked for rotation)
+            if (rotateLeftPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, false, rotateSpeed);
             }
+
+            // Rotate right (collision doesn't need to be checked for rotation)
             if (rotateRightPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, true, rotateSpeed);
@@ -283,11 +294,27 @@ namespace TankyShooty
             {
                 bullets.Remove(bullet);
             }
-            foreach (var wall in wallsToRemove)
-            {
-                walls.Remove(wall);
-            }
+            //foreach (var wall in wallsToRemove)
+            //{
+            //    walls.Remove(wall);
+            //}
 
+
+
+
+        }
+
+        private bool CheckCollision()
+        {
+            foreach (var wall in walls)
+            {
+                if (player1Hitbox.IntersectsWith(wall.Hitbox))
+                {
+                    rotation.Content = "HOZZÁÉLR";
+                    return true;
+                }
+            }
+            return false;
 
 
 
@@ -306,6 +333,7 @@ namespace TankyShooty
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
+            
             double angle = rotateTransform.Angle;
 
             double angleInRadians = angle * (Math.PI / 180);
@@ -318,16 +346,18 @@ namespace TankyShooty
             double currentLeft = Canvas.GetLeft(player);
             double currentTop = Canvas.GetTop(player);
 
-            if (forward) 
-            {
-                Canvas.SetLeft(player, currentLeft + deltaX);
-                Canvas.SetTop(player, currentTop + deltaY);
-            }
-            else
-            {
-                Canvas.SetLeft(player, currentLeft - deltaX);
-                Canvas.SetTop(player, currentTop - deltaY);
-            }
+            
+                if (forward)
+                {
+                    Canvas.SetLeft(player, currentLeft + deltaX);
+                    Canvas.SetTop(player, currentTop + deltaY);
+                }
+                else
+                {
+                    Canvas.SetLeft(player, currentLeft - deltaX);
+                    Canvas.SetTop(player, currentTop - deltaY);
+                }
+            
 
             
             
@@ -366,7 +396,15 @@ namespace TankyShooty
         {
             if (e.Key == Key.Up) 
             {
-                moveForwardPlayer1 = true;
+                if(!CheckCollision()) 
+                {
+                    moveForwardPlayer1 = true;
+                }
+                else
+                {
+                    moveForwardPlayer1 = false;
+                }
+                
             }
             if (e.Key == Key.Down) 
             {
