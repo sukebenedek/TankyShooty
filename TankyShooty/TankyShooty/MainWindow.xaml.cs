@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,13 +19,17 @@ namespace TankyShooty
     {
         public static List<int> Scores { get; } = new List<int> { 0, 0 };
     }
-public partial class MainWindow : Window
+        public partial class MainWindow : Window
     {
         public static List<int> scores = new List<int> { 0, 0 };
 
         public MainWindow()
         {
             InitializeComponent();
+            ImageBrush bg = new ImageBrush();
+            bg.ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/mainbg.jpg"));
+            bg.Stretch = Stretch.Fill;
+            this.Background = bg;
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
