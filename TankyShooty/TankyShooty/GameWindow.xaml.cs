@@ -92,13 +92,13 @@ namespace TankyShooty
 
             ImageBrush imageBrush = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Spongebob.jpg"))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/1.jpg"))
             };
             Player1.Fill = imageBrush;
 
             ImageBrush imageBrush2 = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/images.jpg"))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/1.jpg"))
             };
             Player2.Fill = imageBrush2;
 
