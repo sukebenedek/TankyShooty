@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="img\artworks-pw2gFV01eILuR0fc-mwTRUA-t1080x1080.jpg">
+    <None Update="img\1.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="img\images.jpg">
+    <None Update="img\2.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="img\Spongebob.jpg">
+    <None Update="img\3.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="nevek.txt">
