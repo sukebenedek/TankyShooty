@@ -171,7 +171,8 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
-            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+
+            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
             this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
@@ -182,7 +183,7 @@ namespace TankyShooty
 
             if (moveForwardPlayer1 == true)
             {
-                if(!CheckCollision())
+                if(CanMoveForward(Player1, rectangleRotatePlayer1))
                 {
                     MovePlayer(Player1, rectangleRotatePlayer1, true);
                 }
@@ -308,21 +309,58 @@ namespace TankyShooty
 
         }
 
-        private bool CheckCollision()
+        private Rect RotateRect(Rect rect, double angle)
+        {
+            // Convert the angle to radians
+            double angleInRadians = angle * (Math.PI / 180);
+
+            // Get the center of the rectangle
+            double centerX = rect.X + rect.Width / 2;
+            double centerY = rect.Y + rect.Height / 2;
+
+            // Get the new top-left coordinates after rotation
+            double cosTheta = Math.Cos(angleInRadians);
+            double sinTheta = Math.Sin(angleInRadians);
+
+            double offsetX = rect.X - centerX;
+            double offsetY = rect.Y - centerY;
+
+            // Apply rotation formula for both X and Y axes
+            double newX = centerX + offsetX * cosTheta - offsetY * sinTheta;
+            double newY = centerY + offsetX * sinTheta + offsetY * cosTheta;
+
+            // Return the new rotated Rect
+            return new Rect(newX, newY, rect.Width, rect.Height);
+        }
+        private bool CanMoveForward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform)
         {
             foreach (var wall in walls)
             {
+                
                 if (player1Hitbox.IntersectsWith(wall.Hitbox))
                 {
-                    rotation.Content = "HOZZÁÉLR";
-                    return true;
+                    
+                    if(wall.x1 >= Canvas.GetLeft(player) + 50 && wall.y1 >= Canvas.GetTop(player)) 
+                    {   
+                        if(GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                        {
+                            return false;
+                        }
+                        if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                        {
+                            return false;
+                        }
+
+                    }
+                    
+                    
+
                 }
             }
-            return false;
-
-
-
+            return true;
         }
+
+        
 
         private void Die()
         {
@@ -361,10 +399,10 @@ namespace TankyShooty
                     Canvas.SetLeft(player, currentLeft - deltaX);
                     Canvas.SetTop(player, currentTop - deltaY);
                 }
-            
 
             
-            
+
+
         }
 
         private void RotatePlayer(RotateTransform rotateTransform, bool direction_positive, int rotateSpeed)
