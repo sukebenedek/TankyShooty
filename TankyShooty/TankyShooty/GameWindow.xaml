@@ -5,31 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TankyShooty"
         mc:Ignorable="d"
-        Title="GameWindow" Height="950" Width="920" 
-        ResizeMode="NoResize"
+        Title="TankyShooty :)" Height="955" Width="931"
+        ResizeMode="CanResize"
         WindowStartupLocation="Manual"
         Left="10" Top="10"
+        Loaded="Window_Loaded"
         >
     <Grid>
-        <Canvas Name="MyCanvas" Focusable="True" Background="#FFB8EDaD" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
-            <Rectangle Name="Player1" Height="30" Width="30" Fill="Blue" Canvas.Left="410" Canvas.Top="410">
+        <Canvas Name="MyCanvas" Focusable="True" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
+
+            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="900" Canvas.Top="900">
                 <Rectangle.RenderTransform>
-                    <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="15" CenterY="15"/>
+                    <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="25" CenterY="25"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Name="Player2" Height="30" Width="30" Fill="Red" Canvas.Left="40" Canvas.Top="40">
+            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="25" Canvas.Top="10">
                 <Rectangle.RenderTransform>
-                    <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="15" CenterY="15"/>
+                    <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="25" CenterY="25"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-
-            <Label Name="scoreText" Content="0 - 0" Foreground="Black" FontSize="30" Canvas.Left="215" Canvas.Top="372" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label Name="player1NameDisplay" Content="Player1" Foreground="Black" FontSize="15" Canvas.Left="250" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label Name="player2NameDisplay" Content="Player2" Foreground="Black" FontSize="15" Canvas.Left="187" Canvas.Top="422" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-
-
             <Label Name="rotation" Content="" Foreground="Black" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
+            <Label Name="player1NameDisplay" Content="Player1" Foreground="Black" FontSize="25" Canvas.Left="510" Canvas.Top="831" HorizontalAlignment="Left" VerticalAlignment="Center" Panel.ZIndex="100"/>
+            <Label Name="player2NameDisplay" Content="Player1" Foreground="Black" FontSize="25" Canvas.Left="316" Canvas.Top="831" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" Panel.ZIndex="100" RenderTransformOrigin="0.329,0.456"/>
+
+            <Label Name="scoreText" Content="0 - 0" Foreground="Black" FontSize="50" Canvas.Left="402" Canvas.Top="810" HorizontalAlignment="Left" VerticalAlignment="Center" Panel.ZIndex="100" Height="76" Width="114"/>
         </Canvas>
 
     </Grid>

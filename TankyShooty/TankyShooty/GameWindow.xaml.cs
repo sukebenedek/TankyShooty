@@ -22,6 +22,7 @@ namespace TankyShooty
     /// <summary>
     /// Interaction logic for GameWindow.xaml
     /// </summary>
+    /// 
     public partial class GameWindow : Window
     {
         DispatcherTimer gameTimer = new DispatcherTimer();
@@ -31,16 +32,17 @@ namespace TankyShooty
         int rotateSpeed = 5;
         int bulletSpeed = 15;
 
-        int startXPlayer1 = 410;
-        int startYPlayer1 = 410;
-        int startXPlayer2 = 40;
-        int startYPlayer2 = 40;
+        int startXPlayer1 = 900;
+        int startYPlayer1 = 900;
+        int startXPlayer2 = 25;
+        int startYPlayer2 = 10;
 
         string player1Name = "Player1";
         string player2Name = "Player2";
 
+        public static Random random = new Random();
+
         
-        List<int> scores = [0, 0];
         List<Bullet> bullets = new List<Bullet>();
         List<Bullet> bulletsToRemove = new List<Bullet>();
 
@@ -49,44 +51,82 @@ namespace TankyShooty
 
         public static int cellWidth = 6;
         public static int cellHeight = 6;
-        public Random random = new Random();
-        public int unvisited = 0;
+        public int wallThickness = 15;
+        public static int height;
+        public static int width;
         public int cellSize;
+
         public List<Wall> walls = new List<Wall>();
+        public int unvisited = 0;
         bool[,] visited = new bool[cellWidth, cellHeight];
         bool[,] vwalls = new bool[cellWidth, cellHeight];
         bool[,] hwalls = new bool[cellWidth, cellHeight];
-        public int wallThickness = 15;
+        bool canMoveForward = true;
+
+        List<Wall> wallsToRemove = new List<Wall>();
 
 
         public GameWindow()
         {
             InitializeComponent();
 
+            cellSize = 150;
+            //startXPlayer1 = random.Next(1, cellWidth/2) * cellSize / 2; //nem létezik??
+            //startYPlayer1 = random.Next(1, cellHeight/2) * cellSize / 2; //nem létezik??
+            //startXPlayer2 = random.Next(cellHeight / 2, cellWidth) * cellSize / 2; //nem létezik??
+            //startYPlayer2 = random.Next(cellHeight / 2, cellHeight) * cellSize / 2; //nem létezik??
+
             gameTimer.Interval = TimeSpan.FromMilliseconds(20);
-            gameTimer.Tick += GameLoop;
+            gameTimer.Tick += GameLoop!;
             gameTimer.Start();
 
-            MyCanvas.Focus();      
+            MyCanvas.Focus();
+
+            ImageBrush bg = new ImageBrush();
+            bg.ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Canvas-Background.jpg"));
+            bg.TileMode = TileMode.None;
+            //bg.Viewport = new Rect(0, 0, 0.15, 0.15);
+            //bg.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
+            bg.Stretch = Stretch.Fill;
+            MyCanvas.Background = bg;
 
             ImageBrush imageBrush = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[0]))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Spongebob.jpg"))
             };
             Player1.Fill = imageBrush;
 
             ImageBrush imageBrush2 = new ImageBrush
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetFiles(Directory.GetCurrentDirectory() + "/img/", "*.jpg").ToList()[2]))
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/images.jpg"))
             };
             Player2.Fill = imageBrush2;
 
             player1NameDisplay.Content = player1Name;
             player2NameDisplay.Content = player2Name;
+            
 
-            cellSize = 150;
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            height = Convert.ToInt32(MyCanvas.ActualHeight);
+            width = Convert.ToInt32(MyCanvas.ActualWidth);
             //MyCanvas.Width = cellWidth * cellSize;
             //this.Width = MyCanvas.Width;
+
+            //ImageBrush backgroundBrush = new ImageBrush();
+            //backgroundBrush.ImageSource = new BitmapImage(new Uri("img/backgroung.jpg", UriKind.Relative));
+            //backgroundBrush.TileMode = TileMode.Tile;
+            //backgroundBrush.Viewport = new Rect(0, 0, 626, 566); // Adjust tile size
+            //backgroundBrush.ViewportUnits = BrushMappingMode.Absolute;
+            //backgroundBrush.Stretch = Stretch.None;
+
+            //MyCanvas.Background = backgroundBrush;     
+
+
+
             for (int i = 0; i < cellWidth; i++)
             {
                 for (int j = 0; j < cellHeight; j++)
@@ -115,105 +155,49 @@ namespace TankyShooty
                 }
             }
 
+            walls.Add(new Wall(0, 0 , wallThickness, height, (byte)0));
+            walls.Add(new Wall(0, 0 , width, wallThickness, (byte)0));
+            walls.Add(new Wall(width - wallThickness, 0 , width, height, (byte)0));
+            walls.Add(new Wall(0, height - wallThickness , width, height, (byte)0));
+
             walls.ForEach(w => w.Draw(MyCanvas));
 
         }
 
-        void AldousBroder()
-        {
-            int[] p = { 0, 0 };
-            visit(p);
-
-            while (unvisited < cellWidth * cellHeight)
-            {
-                var next = pickNeighbor(p);
-                if (!isvisited(next))
-                {
-                    visit(next);
-                    removeWall(p, next);
-                }
-                p = next;
-            }
-        }
-
-        int[] pickNeighbor(int[] p)
-        {
-            int i = p[0], j = p[1];
-            int[,] neighbors = new int[,] {
-                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
-            };
-            return pickValid(neighbors);
-        }
-
-        void visit(int[] p)
-        {
-            visited[p[0], p[1]] = true;
-            unvisited++;
-        }
-
-        int[] pick(int[,] neighbors)
-        {
-            int n = random.Next(4);
-            return new int[] { neighbors[n, 0], neighbors[n, 1] };
-        }
-
-        bool checkValid(int[] point)
-        {
-            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
-        }
-
-        int[] pickValid(int[,] neighbors)
-        {
-            var n = pick(neighbors);
-            bool b = checkValid(n);
-            while (!b)
-            {
-                n = pick(neighbors);
-                b = checkValid(n);
-            }
-            return n;
-        }
-
-        bool isvisited(int[] p)
-        {
-            return visited[p[0], p[1]];
-        }
-
-        void removeWall(int[] p1, int[] p2)
-        {
-            int dx = p2[0] - p1[0];
-            int dy = p2[1] - p1[1];
-
-            if (dx == -1) vwalls[p1[0], p1[1]] = false;
-            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
-            if (dy == -1) hwalls[p1[0], p1[1]] = false;
-            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
-        }
 
         private void GameLoop(object sender, EventArgs e)
         {
 
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
-            player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player1.Width, Player1.Height);
+            player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
             //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
-            scoreText.Content = $"{scores[0]} - {scores[1]}";
+            scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
+            this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
+
+
+
+
 
             if (moveForwardPlayer1 == true)
             {
-
                 MovePlayer(Player1, rectangleRotatePlayer1, true);
-
             }
-            if(moveBackwardPlayer1 == true)
+
+            // Only move backward if there's no collision
+            if (moveBackwardPlayer1 == true)
             {
                 MovePlayer(Player1, rectangleRotatePlayer1, false);
             }
-            if (rotateLeftPlayer1 == true) 
+
+            // Rotate left (collision doesn't need to be checked for rotation)
+            if (rotateLeftPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, false, rotateSpeed);
             }
+
+            // Rotate right (collision doesn't need to be checked for rotation)
             if (rotateRightPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, true, rotateSpeed);
@@ -287,9 +271,10 @@ namespace TankyShooty
                     {
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
-                        scores[1]++;
-                        
-                    }  
+                        Score.Scores[1]++;
+                        Die();
+
+                    }
                 }
                 if ((string)bullet.rectangle.Tag == "bulletPlayer2")
                 {
@@ -297,8 +282,9 @@ namespace TankyShooty
                     {
                         RemoveBullets();
                         ResetPlayers(-90.0, 90.0);
-                        scores[0]++;
-                        
+                        Score.Scores[0]++;
+                        Die();
+
                     }
 
                 }
@@ -308,14 +294,46 @@ namespace TankyShooty
             {
                 bullets.Remove(bullet);
             }
+            //foreach (var wall in wallsToRemove)
+            //{
+            //    walls.Remove(wall);
+            //}
+
+
 
 
         }
 
-        
+        private bool CheckCollision()
+        {
+            foreach (var wall in walls)
+            {
+                if (player1Hitbox.IntersectsWith(wall.Hitbox))
+                {
+                    rotation.Content = "HOZZÁÉLR";
+                    return true;
+                }
+            }
+            return false;
+
+
+
+        }
+
+        private void Die()
+        {
+
+            var newWindow = new GameWindow();
+            this.Hide();
+            this.Close();
+            newWindow.Show();
+        }
+
+
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
+            
             double angle = rotateTransform.Angle;
 
             double angleInRadians = angle * (Math.PI / 180);
@@ -328,16 +346,18 @@ namespace TankyShooty
             double currentLeft = Canvas.GetLeft(player);
             double currentTop = Canvas.GetTop(player);
 
-            if (forward) 
-            {
-                Canvas.SetLeft(player, currentLeft + deltaX);
-                Canvas.SetTop(player, currentTop + deltaY);
-            }
-            else
-            {
-                Canvas.SetLeft(player, currentLeft - deltaX);
-                Canvas.SetTop(player, currentTop - deltaY);
-            }
+            
+                if (forward)
+                {
+                    Canvas.SetLeft(player, currentLeft + deltaX);
+                    Canvas.SetTop(player, currentTop + deltaY);
+                }
+                else
+                {
+                    Canvas.SetLeft(player, currentLeft - deltaX);
+                    Canvas.SetTop(player, currentTop - deltaY);
+                }
+            
 
             
             
@@ -348,6 +368,7 @@ namespace TankyShooty
             if (direction_positive) rotateTransform.Angle += rotateSpeed;
             else rotateTransform.Angle -= rotateSpeed;
         }
+
 
         private void ResetPlayers(double angle, double angle2) 
         {
@@ -375,7 +396,15 @@ namespace TankyShooty
         {
             if (e.Key == Key.Up) 
             {
-                moveForwardPlayer1 = true;
+                if(!CheckCollision()) 
+                {
+                    moveForwardPlayer1 = true;
+                }
+                else
+                {
+                    moveForwardPlayer1 = false;
+                }
+                
             }
             if (e.Key == Key.Down) 
             {
@@ -459,10 +488,10 @@ namespace TankyShooty
                     Stroke = Brushes.Red,
                 };
 
-                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
-                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1]);
+                Canvas.SetLeft(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer1, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 30.0, 30.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
+                Rect bulletHitBox = new Rect(Canvas.GetLeft(Player1) + Player1.Width / 2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), 50.0, 50.0, rectangleRotatePlayer1.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer1);
 
@@ -482,10 +511,10 @@ namespace TankyShooty
 
 
 
-                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
-                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1]);
+                Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
+                Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[1]);
 
-                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 30.0, 30.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
+                Rect bulletHitBox = new Rect(GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2), GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[1], 5, 5);
 
                 MyCanvas.Children.Add(newBulletPlayer2);
 
@@ -493,7 +522,7 @@ namespace TankyShooty
             }
         }
 
-        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 30.0, double height = 30.0, double angle = 0)
+        public double[] GetMiddleOfFrontEdge(double x, double y, double width = 50.0, double height = 50.0, double angle = 0)
         {
             // Convert angle to radians
             double radians = angle * Math.PI / 180;
@@ -534,6 +563,79 @@ namespace TankyShooty
             {
                 return "Top Right";
             }
+        }
+
+
+
+        void AldousBroder()
+        {
+            int[] p = { 0, 0 };
+            visit(p);
+
+            while (unvisited < cellWidth * cellHeight)
+            {
+                var next = pickNeighbor(p);
+                if (!isvisited(next))
+                {
+                    visit(next);
+                    removeWall(p, next);
+                }
+                p = next;
+            }
+        }
+
+        int[] pickNeighbor(int[] p)
+        {
+            int i = p[0], j = p[1];
+            int[,] neighbors = new int[,] {
+                {i-1, j}, {i+1, j}, {i, j+1}, {i, j-1}
+            };
+            return pickValid(neighbors);
+        }
+
+        void visit(int[] p)
+        {
+            visited[p[0], p[1]] = true;
+            unvisited++;
+        }
+
+        int[] pick(int[,] neighbors)
+        {
+            int n = random.Next(4);
+            return new int[] { neighbors[n, 0], neighbors[n, 1] };
+        }
+
+        bool checkValid(int[] point)
+        {
+            return (0 <= point[0] && point[0] < cellWidth) && (0 <= point[1] && point[1] < cellHeight);
+        }
+
+        int[] pickValid(int[,] neighbors)
+        {
+            var n = pick(neighbors);
+            bool b = checkValid(n);
+            while (!b)
+            {
+                n = pick(neighbors);
+                b = checkValid(n);
+            }
+            return n;
+        }
+
+        bool isvisited(int[] p)
+        {
+            return visited[p[0], p[1]];
+        }
+
+        void removeWall(int[] p1, int[] p2)
+        {
+            int dx = p2[0] - p1[0];
+            int dy = p2[1] - p1[1];
+
+            if (dx == -1) vwalls[p1[0], p1[1]] = false;
+            if (dx == 1) vwalls[p1[0] + dx, p1[1]] = false;
+            if (dy == -1) hwalls[p1[0], p1[1]] = false;
+            if (dy == 1) hwalls[p1[0], p1[1] + dy] = false;
         }
     }
 }
