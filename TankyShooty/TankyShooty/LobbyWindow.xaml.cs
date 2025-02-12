@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace TankyShooty
@@ -76,14 +77,31 @@ namespace TankyShooty
 
         private void BtnReady_Click(object sender, RoutedEventArgs e)
         {
+
+            if (Player_1.Text == "" || Player_2.Text == "")
+            {
+                MessageBox.Show("Adjátok meg játékosneveteket", "Nincs Játékosnév", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else if (Player_1.Text == Player_2.Text)
+            {
+                MessageBox.Show("Kérjük adjatok meg különböző játékosneveteket", "Azonos Játékosnév", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else if (Player1Index == Player2Index)
+            {
+                MessageBox.Show("Kérjük válasszatok különböző karaktereket", "Azonos Karakter", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else
+            {
             GameWindow gameWindow = new GameWindow();
             gameWindow.Closed += (s, e) => this.Show();
             gameWindow.Show();
             this.Hide();
 
             string filePath = "nevek.txt";
-            string content = $"{Player_1.Text};{Player1Img.Source}\n{Player_2.Text};{Player2Img.Source}";
+            string content = $"{Player_1.Text};{Player1Index+1}.jpg\n{Player_2.Text};{Player2Index+1}.jpg";
             File.WriteAllText(filePath, content);
+            }
+
         }
     }
 }
