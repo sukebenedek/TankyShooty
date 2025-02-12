@@ -14,12 +14,12 @@
     <Grid>
         <Canvas Name="MyCanvas" Focusable="True" KeyDown="OnKeyDown" KeyUp="OnKeyUp">
 
-            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="900" Canvas.Top="900">
+            <Rectangle Name="Player1" Height="50" Width="50" Fill="Blue" Canvas.Left="811" Canvas.Top="813" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Rectangle.RenderTransform>
                     <RotateTransform x:Name="rectangleRotatePlayer1" Angle="-90" CenterX="25" CenterY="25"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="25" Canvas.Top="10">
+            <Rectangle Name="Player2" Height="50" Width="50" Fill="Red" Canvas.Left="61" Canvas.Top="50">
                 <Rectangle.RenderTransform>
                     <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="25" CenterY="25"/>
                 </Rectangle.RenderTransform>
