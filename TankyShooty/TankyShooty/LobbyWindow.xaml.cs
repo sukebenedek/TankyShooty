@@ -98,7 +98,7 @@ namespace TankyShooty
             this.Hide();
 
             string filePath = "nevek.txt";
-            string content = $"{Player_1.Text};{Player1Img}\n{Player_2.Text};{Player2Img}";
+            string content = $"{Player_1.Text};{Player1Index+1}.jpg\n{Player_2.Text};{Player2Index+1}.jpg";
             File.WriteAllText(filePath, content);
             }
 
