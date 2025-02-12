@@ -48,6 +48,28 @@ namespace TankyShooty
             }
         }
 
+        public bool isVertical
+        {
+            get
+            {
+                return (Hitbox.Width > Hitbox.Height) ? false : true; // ts pmo 💔
+            }
+        }
+
+        public System.Drawing.Rectangle Hitbox
+        {
+            get
+            {
+                int left = x1;
+                int top = y1;
+                int width = (int)Math.Abs(x2 - x1);
+                int height = (int)Math.Abs(y2 - y1);
+
+                return new System.Drawing.Rectangle(left, top, width, height);
+            }
+        }
+
+
         public void Draw(Canvas cvs)
         {
             cvs.Children.Add(Rect);
