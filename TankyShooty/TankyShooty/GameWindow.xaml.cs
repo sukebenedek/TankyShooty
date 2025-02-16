@@ -304,6 +304,15 @@ namespace TankyShooty
 
                 }
 
+                foreach (var wall in walls)
+                {
+                    if(bullet.hitbox.IntersectsWith(wall.Hitbox))
+                    {
+                        MyCanvas.Children.Remove(bullet.rectangle);
+                        bulletsToRemove.Add(bullet);
+                    }
+                }
+
             }
             foreach (var bullet in bulletsToRemove)
             {
