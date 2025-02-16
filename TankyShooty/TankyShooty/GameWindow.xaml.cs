@@ -172,37 +172,41 @@ namespace TankyShooty
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
 
-            rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
             this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
+            rotation.Content = Canvas.GetLeft(Player1) ;
 
 
-
+            
 
 
             if (moveForwardPlayer1 == true)
             {
-                if(CanMoveForward(Player1, rectangleRotatePlayer1))
+                if (CanMoveForward(Player1, rectangleRotatePlayer1))
                 {
                     MovePlayer(Player1, rectangleRotatePlayer1, true);
                 }
-                
+  
             }
 
-            // Only move backward if there's no collision
+
             if (moveBackwardPlayer1 == true)
             {
-                MovePlayer(Player1, rectangleRotatePlayer1, false);
+                if (CanMoveBackward(Player1, rectangleRotatePlayer1))
+                {
+                    MovePlayer(Player1, rectangleRotatePlayer1, false);
+                }  
             }
 
-            // Rotate left (collision doesn't need to be checked for rotation)
+
             if (rotateLeftPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, false, rotateSpeed);
             }
 
-            // Rotate right (collision doesn't need to be checked for rotation)
+
             if (rotateRightPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, true, rotateSpeed);
@@ -211,11 +215,17 @@ namespace TankyShooty
 
             if (moveForwardPlayer2 == true)
             {
-                MovePlayer(Player2, rectangleRotatePlayer2, true);
+                if (CanMoveForward(Player2, rectangleRotatePlayer2))
+                {
+                    MovePlayer(Player2, rectangleRotatePlayer2, true);
+                }
             }
             if (moveBackwardPlayer2 == true)
             {
-                MovePlayer(Player2, rectangleRotatePlayer2, false);
+                if (CanMoveBackward(Player2, rectangleRotatePlayer2))
+                {
+                    MovePlayer(Player2, rectangleRotatePlayer2, false);
+                }
             }
 
             if (rotateLeftPlayer2 == true)
@@ -339,28 +349,243 @@ namespace TankyShooty
                 
                 if (player1Hitbox.IntersectsWith(wall.Hitbox))
                 {
-                    
-                    if(wall.x1 >= Canvas.GetLeft(player) + 50 && wall.y1 >= Canvas.GetTop(player)) 
-                    {   
-                        if(GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                    if(wall.isVertical) //VERTIVAL WALL
+                    {
+                        if (Canvas.GetLeft(wall.Rect) >= Canvas.GetLeft(player) && (Canvas.GetTop(wall.Rect) < Canvas.GetTop(player)) && Canvas.GetTop(wall.Rect) + (int)Math.Abs(wall.y2 - wall.y1) > Canvas.GetTop(player) + 50)
                         {
-                            return false;
-                        }
-                        if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
-                        {
-                            return false;
-                        }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
 
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+
+                            }
+                        } 
+                        else if(Canvas.GetLeft(wall.Rect) <= Canvas.GetLeft(player) && (Canvas.GetTop(wall.Rect) < Canvas.GetTop(player)) && Canvas.GetTop(wall.Rect) + (int)Math.Abs(wall.y2 - wall.y1) > Canvas.GetTop(player) + 50) 
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) > Canvas.GetTop(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+                                
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) <= Canvas.GetTop(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+                  
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+               
+                            }
+                        }
+                    } else //HORIZONTAL WALL
+                    {
+                        if (Canvas.GetTop(wall.Rect) >= Canvas.GetTop(player) && (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player)) && Canvas.GetLeft(wall.Rect) + (int)Math.Abs(wall.x2 - wall.x1) > Canvas.GetLeft(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+                     
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) <= Canvas.GetTop(player) && (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player)) && Canvas.GetLeft(wall.Rect) + (int)Math.Abs(wall.x2 - wall.x1) > Canvas.GetLeft(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+                        
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+                   
+                            }
+                        }
+                        else if (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+                        
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+                
+                            }
+                        }
+                        else if (Canvas.GetLeft(wall.Rect) > Canvas.GetLeft(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+             
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+                  
+                            }
+                        }
                     }
-                    
-                    
-
                 }
             }
             return true;
+
         }
 
-        
+        private bool CanMoveBackward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform)
+        {
+            foreach (var wall in walls)
+            {
+
+                if (player1Hitbox.IntersectsWith(wall.Hitbox))
+                {
+                    if (wall.isVertical) //VERTIVAL WALL
+                    {
+                        if (Canvas.GetLeft(wall.Rect) >= Canvas.GetLeft(player) && (Canvas.GetTop(wall.Rect) < Canvas.GetTop(player)) && Canvas.GetTop(wall.Rect) + (int)Math.Abs(wall.y2 - wall.y1) > Canvas.GetTop(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetLeft(wall.Rect) <= Canvas.GetLeft(player) && (Canvas.GetTop(wall.Rect) < Canvas.GetTop(player)) && Canvas.GetTop(wall.Rect) + (int)Math.Abs(wall.y2 - wall.y1) > Canvas.GetTop(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) > Canvas.GetTop(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) <= Canvas.GetTop(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                    }
+                    else //HORIZONTAL WALL
+                    {
+                        if (Canvas.GetTop(wall.Rect) >= Canvas.GetTop(player) && (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player)) && Canvas.GetLeft(wall.Rect) + (int)Math.Abs(wall.x2 - wall.x1) > Canvas.GetLeft(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetTop(wall.Rect) <= Canvas.GetTop(player) && (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player)) && Canvas.GetLeft(wall.Rect) + (int)Math.Abs(wall.x2 - wall.x1) > Canvas.GetLeft(player) + 50)
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetLeft(wall.Rect) < Canvas.GetLeft(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Right")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Right")
+                            {
+                                return false;
+
+                            }
+                        }
+                        else if (Canvas.GetLeft(wall.Rect) > Canvas.GetLeft(player))
+                        {
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Bottom Left")
+                            {
+                                return false;
+
+                            }
+                            if (GetRectangleQuadrant(rotateTransform.Angle) == "Top Left")
+                            {
+                                return false;
+
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+
+        }
 
         private void Die()
         {
@@ -380,10 +605,15 @@ namespace TankyShooty
 
             double angleInRadians = angle * (Math.PI / 180);
 
+            double deltaX;
+            double deltaY;
 
-            double deltaX = Math.Cos(angleInRadians) * playerSpeed;
-            double deltaY = Math.Sin(angleInRadians) * playerSpeed;
+            
+                deltaX = Math.Cos(angleInRadians) * playerSpeed;
+                deltaY = Math.Sin(angleInRadians) * playerSpeed;
 
+
+            
 
             double currentLeft = Canvas.GetLeft(player);
             double currentTop = Canvas.GetTop(player);
