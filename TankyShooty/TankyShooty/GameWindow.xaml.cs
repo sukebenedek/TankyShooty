@@ -184,7 +184,7 @@ namespace TankyShooty
 
             if (moveForwardPlayer1 == true)
             {
-                if (CanMoveForward(Player1, rectangleRotatePlayer1))
+                if (CanMoveForward(Player1, rectangleRotatePlayer1, player1Hitbox))
                 {
                     MovePlayer(Player1, rectangleRotatePlayer1, true);
                 }
@@ -194,7 +194,7 @@ namespace TankyShooty
 
             if (moveBackwardPlayer1 == true)
             {
-                if (CanMoveBackward(Player1, rectangleRotatePlayer1))
+                if (CanMoveBackward(Player1, rectangleRotatePlayer1, player1Hitbox))
                 {
                     MovePlayer(Player1, rectangleRotatePlayer1, false);
                 }  
@@ -215,14 +215,14 @@ namespace TankyShooty
 
             if (moveForwardPlayer2 == true)
             {
-                if (CanMoveForward(Player2, rectangleRotatePlayer2))
+                if (CanMoveForward(Player2, rectangleRotatePlayer2, player2Hitbox))
                 {
                     MovePlayer(Player2, rectangleRotatePlayer2, true);
                 }
             }
             if (moveBackwardPlayer2 == true)
             {
-                if (CanMoveBackward(Player2, rectangleRotatePlayer2))
+                if (CanMoveBackward(Player2, rectangleRotatePlayer2, player2Hitbox))
                 {
                     MovePlayer(Player2, rectangleRotatePlayer2, false);
                 }
@@ -342,12 +342,12 @@ namespace TankyShooty
             // Return the new rotated Rect
             return new Rect(newX, newY, rect.Width, rect.Height);
         }
-        private bool CanMoveForward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform)
+        private bool CanMoveForward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform, Rect hitbox)
         {
             foreach (var wall in walls)
             {
                 
-                if (player1Hitbox.IntersectsWith(wall.Hitbox))
+                if (hitbox.IntersectsWith(wall.Hitbox))
                 {
                     if(wall.isVertical) //VERTIVAL WALL
                     {
@@ -464,12 +464,12 @@ namespace TankyShooty
 
         }
 
-        private bool CanMoveBackward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform)
+        private bool CanMoveBackward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform, Rect hitbox)
         {
             foreach (var wall in walls)
             {
 
-                if (player1Hitbox.IntersectsWith(wall.Hitbox))
+                if (hitbox.IntersectsWith(wall.Hitbox))
                 {
                     if (wall.isVertical) //VERTIVAL WALL
                     {
