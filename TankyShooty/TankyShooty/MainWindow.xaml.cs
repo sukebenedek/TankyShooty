@@ -19,7 +19,16 @@ namespace TankyShooty
     {
         public static List<int> Scores { get; } = new List<int> { 0, 0 };
     }
-        public partial class MainWindow : Window
+
+    public static class GameData
+    {
+        public static string Name1 { get; set; }
+        public static string Name2 { get; set; }
+        public static int Skin1 { get; set; }
+        public static int Skin2 { get; set; }
+
+    }
+    public partial class MainWindow : Window
     {
         public static List<int> scores = new List<int> { 0, 0 };
 

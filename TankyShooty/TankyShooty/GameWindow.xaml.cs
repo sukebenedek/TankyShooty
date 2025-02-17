@@ -90,27 +90,19 @@ namespace TankyShooty
             bg.Stretch = Stretch.Fill;
             MyCanvas.Background = bg;
 
-            ImageBrush imageBrush = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/1.jpg"))
-            };
-            Player1.Fill = imageBrush;
 
-            ImageBrush imageBrush2 = new ImageBrush
-            {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/2.jpg"))
-            };
-            Player2.Fill = imageBrush2;
 
-            player1NameDisplay.Content = player1Name;
-            player2NameDisplay.Content = player2Name;
-            
+
+
 
 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
+           
+
             height = Convert.ToInt32(MyCanvas.ActualHeight);
             width = Convert.ToInt32(MyCanvas.ActualWidth);
             //MyCanvas.Width = cellWidth * cellSize;
@@ -167,16 +159,29 @@ namespace TankyShooty
 
         private void GameLoop(object sender, EventArgs e)
         {
-
+            rotation.Content = GameData.Skin1;
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
+            ImageBrush imageBrush = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin1) + ".jpg"))
+            };
+            Player1.Fill = imageBrush;
 
+            ImageBrush imageBrush2 = new ImageBrush
+            {
+                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin2) + ".jpg"))
+            };
+            Player2.Fill = imageBrush2;
+
+            player1NameDisplay.Content = GameData.Name1;
+            player2NameDisplay.Content = GameData.Name2;
             //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
             this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
             //rotation.Content = bullets.Count;
-            rotation.Content = Canvas.GetLeft(Player1) ;
+            //rotation.Content = Canvas.GetLeft(Player1) ;
 
 
             

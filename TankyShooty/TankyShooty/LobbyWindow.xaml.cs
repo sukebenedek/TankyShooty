@@ -92,14 +92,20 @@ namespace TankyShooty
             }
             else
             {
-            GameWindow gameWindow = new GameWindow();
-            gameWindow.Closed += (s, e) => this.Show();
-            gameWindow.Show();
-            this.Hide();
+                GameWindow gameWindow = new GameWindow();
+                gameWindow.Closed += (s, e) => this.Show();
+                gameWindow.Show();
+                this.Hide();
 
-            string filePath = "nevek.txt";
-            string content = $"{Player_1.Text};{Player1Index+1}.jpg\n{Player_2.Text};{Player2Index+1}.jpg";
-            File.WriteAllText(filePath, content);
+                string filePath = "nevek.txt";
+                string content = $"{Player_1.Text};{Player1Index+1}.jpg\n{Player_2.Text};{Player2Index+1}.jpg";
+                File.WriteAllText(filePath, content);
+
+                GameData.Name1 = Player_1.Text;
+                GameData.Name2 = Player_2.Text;
+                GameData.Skin1 = ++Player1Index;
+                GameData.Skin2 = ++Player2Index;
+
             }
 
         }

@@ -43,7 +43,7 @@
         <TextBox TextAlignment="Center" FontFamily="Impact" FontSize="28" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Foreground="Crimson" Background="Transparent" VerticalAlignment="Top" Margin="0,59,257,0" Height="58" Name="Player_1"/>
         <TextBox TextAlignment="Center" FontFamily="Impact" FontSize="28" Grid.Row="0" Grid.Column="1" Foreground="Blue" Background="Transparent" VerticalAlignment="Top" Margin="257,59,0,0" Height="58" Grid.ColumnSpan="2" Name="Player_2"/>
 
-        <Button Background="Crimson" Name="BtnReady" FontFamily="Impact" Content="Játék" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" Height="45" Margin="0,155,0,0" Click="BtnReady_Click"/>
+        <Button Background="Crimson" Name="BtnReady" FontFamily="Impact" Content="Játék" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" Height="45" Margin="0,155,0,0" Click="BtnReady_Click" FontSize="30"/>
         
         <Button Background="Blue" Foreground="White" Name="BtnClose" FontFamily="Impact" Content="Vissza a Főmenübe" Canvas.Left="365" Canvas.Top="376" Click="BtnClose_Click" Grid.Row="2" Grid.Column="1" Margin="41,44,41,43"/>
 
