@@ -163,42 +163,108 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
+            List<string> lines = [];
             if (GameData.Skin1 != 0)
             {
-                ImageBrush imageBrush = new ImageBrush
-                {
-                    ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin1) + ".jpg"))
-                };
-                Player1.Fill = imageBrush;
-
-                ImageBrush imageBrush2 = new ImageBrush
-                {
-                    ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin2) + ".jpg"))
-                };
-                Player2.Fill = imageBrush2;
-
-                player1NameDisplay.Content = GameData.Name1;
-                player2NameDisplay.Content = GameData.Name2;
-            }
-            else
-            {
-                var lines = File.ReadAllLines("nevek.txt").ToList();
-                if (lines.Count > 0)
+                try
                 {
                     ImageBrush imageBrush = new ImageBrush
                     {
-                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[0].Split(';')[1]))
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin1) + ".jpg"))
                     };
                     Player1.Fill = imageBrush;
 
                     ImageBrush imageBrush2 = new ImageBrush
                     {
-                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[1].Split(';')[1]))
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin2) + ".jpg"))
                     };
                     Player2.Fill = imageBrush2;
 
-                    player1NameDisplay.Content = lines[0].Split(';')[0];
-                    player2NameDisplay.Content = lines[1].Split(';')[0];
+                    player1NameDisplay.Content = GameData.Name1;
+                    player2NameDisplay.Content = GameData.Name2;
+                }
+                catch (Exception ex) 
+                {
+                    ImageBrush imageBrush = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/1.jpg"))
+                    };
+                    Player1.Fill = imageBrush;
+
+                    ImageBrush imageBrush2 = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/2.jpg"))
+                    };
+                    Player2.Fill = imageBrush2;
+
+                    player1NameDisplay.Content = player1Name;
+                    player2NameDisplay.Content = player2Name;
+                }
+                
+            }
+            else
+            {
+                
+                try
+                {
+                    lines = File.ReadAllLines("nevek.txt").ToList();
+                }
+                catch (Exception ex) 
+                {
+                    ImageBrush imageBrush = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/1.jpg"))
+                    };
+                    Player1.Fill = imageBrush;
+
+                    ImageBrush imageBrush2 = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/2.jpg"))
+                    };
+                    Player2.Fill = imageBrush2;
+
+                    player1NameDisplay.Content = player1Name;
+                    player2NameDisplay.Content = player2Name;
+
+                }
+                
+                if (lines.Count > 0)
+                {
+                    try
+                    {
+                        ImageBrush imageBrush = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[0].Split(';')[1]))
+                        };
+                        Player1.Fill = imageBrush;
+
+                        ImageBrush imageBrush2 = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[1].Split(';')[1]))
+                        };
+                        Player2.Fill = imageBrush2;
+
+                        player1NameDisplay.Content = lines[0].Split(';')[0];
+                        player2NameDisplay.Content = lines[1].Split(';')[0];
+                    }
+                    catch (Exception ex) 
+                    {
+                        ImageBrush imageBrush = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/1.jpg"))
+                        };
+                        Player1.Fill = imageBrush;
+
+                        ImageBrush imageBrush2 = new ImageBrush
+                        {
+                            ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/2.jpg"))
+                        };
+                        Player2.Fill = imageBrush2;
+
+                        player1NameDisplay.Content = player1Name;
+                        player2NameDisplay.Content = player2Name;
+                    }
+                    
                 }
                 else
                 {
