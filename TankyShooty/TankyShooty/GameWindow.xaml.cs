@@ -163,20 +163,62 @@ namespace TankyShooty
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
-            ImageBrush imageBrush = new ImageBrush
+            if (GameData.Skin1 != 0)
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin1) + ".jpg"))
-            };
-            Player1.Fill = imageBrush;
+                ImageBrush imageBrush = new ImageBrush
+                {
+                    ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin1) + ".jpg"))
+                };
+                Player1.Fill = imageBrush;
 
-            ImageBrush imageBrush2 = new ImageBrush
+                ImageBrush imageBrush2 = new ImageBrush
+                {
+                    ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin2) + ".jpg"))
+                };
+                Player2.Fill = imageBrush2;
+
+                player1NameDisplay.Content = GameData.Name1;
+                player2NameDisplay.Content = GameData.Name2;
+            }
+            else
             {
-                ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + (GameData.Skin2) + ".jpg"))
-            };
-            Player2.Fill = imageBrush2;
+                var lines = File.ReadAllLines("nevek.txt").ToList();
+                if (lines.Count > 0)
+                {
+                    ImageBrush imageBrush = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[0].Split(';')[1]))
+                    };
+                    Player1.Fill = imageBrush;
 
-            player1NameDisplay.Content = GameData.Name1;
-            player2NameDisplay.Content = GameData.Name2;
+                    ImageBrush imageBrush2 = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/" + lines[1].Split(';')[1]))
+                    };
+                    Player2.Fill = imageBrush2;
+
+                    player1NameDisplay.Content = lines[0].Split(';')[0];
+                    player2NameDisplay.Content = lines[1].Split(';')[0];
+                }
+                else
+                {
+                    ImageBrush imageBrush = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/1.jpg"))
+                    };
+                    Player1.Fill = imageBrush;
+
+                    ImageBrush imageBrush2 = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/players/2.jpg"))
+                    };
+                    Player2.Fill = imageBrush2;
+
+                    player1NameDisplay.Content = player1Name;
+                    player2NameDisplay.Content = player2Name;
+                }
+
+            }
             //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
             this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
