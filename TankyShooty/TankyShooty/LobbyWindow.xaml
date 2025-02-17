@@ -45,7 +45,7 @@
 
         <Button Background="Crimson" Name="BtnReady" FontFamily="Impact" Content="Játék" Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" Height="45" Margin="0,155,0,0" Click="BtnReady_Click" FontSize="30"/>
         
-        <Button Background="Blue" Foreground="White" Name="BtnClose" FontFamily="Impact" Content="Vissza a Főmenübe" Canvas.Left="365" Canvas.Top="376" Click="BtnClose_Click" Grid.Row="2" Grid.Column="1" Margin="41,44,41,43"/>
+        <Button Background="Blue" Foreground="White" Name="BtnClose" FontFamily="Impact" Content="Vissza a Főmenübe" Canvas.Left="365" Canvas.Top="376" Click="BtnClose_Click" Grid.Row="2" Grid.Column="1" Margin="41,44,41,43" FontSize="18"/>
 
     </Grid>
 </Window>

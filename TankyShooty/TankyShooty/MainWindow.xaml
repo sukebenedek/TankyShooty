@@ -11,8 +11,8 @@
     <Grid>
         <Canvas Name="MainCanvas">
             <TextBlock FontFamily="Impact" Foreground="Crimson" FontSize="32" TextAlignment="Center" Canvas.Left="274" TextWrapping="Wrap" Text="Tanky Shooty" Canvas.Top="53" Height="46" Width="252" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Button FontFamily="Impact" Content="JÁTÉK" Canvas.Left="308" Canvas.Top="202" Height="35" Width="184" HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click" />
-            <Button FontFamily="Impact" Content="Lobby" Canvas.Left="308" Canvas.Top="259" Height="35" Width="184" HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click_1"/>
+            <Button Background="Crimson" FontFamily="Impact" Content="JÁTÉK" Canvas.Left="308" Canvas.Top="202" Height="35" Width="184" HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click" />
+            <Button Background="Blue" Foreground="AliceBlue" FontFamily="Impact" Content="Lobby" Canvas.Left="308" Canvas.Top="259" Height="35" Width="184" HorizontalAlignment="Center" VerticalAlignment="Top" Click="Button_Click_1"/>
             <Button Background="Crimson" Name="BtnClose" FontFamily="Impact" Content="Kilépés" Canvas.Left="365" Canvas.Top="376" Height="30" Width="70" Click="BtnClose_Click"/>
 
         </Canvas>
