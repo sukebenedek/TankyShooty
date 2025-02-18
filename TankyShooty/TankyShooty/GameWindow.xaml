@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TankyShooty"
         mc:Ignorable="d"
-        Title="TankyShooty :)" Height="955" Width="931"
-        ResizeMode="CanResize"
+        Title="TankyShooty" Height="955" Width="931"
+        ResizeMode="NoResize"
         WindowStartupLocation="Manual"
         Left="10" Top="10"
         Loaded="Window_Loaded"
@@ -24,7 +24,7 @@
                     <RotateTransform x:Name="rectangleRotatePlayer2" Angle="90" CenterX="25" CenterY="25"/>
                 </Rectangle.RenderTransform>
             </Rectangle>
-            <Label Name="rotation" Content="" Foreground="Black" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <!--<Label Name="rotation" Content="" Foreground="Black" FontSize="10" Canvas.Left="132" Canvas.Top="40" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
 
             <Label Name="player1NameDisplay" Content="Player1" Foreground="Black" FontSize="25" Canvas.Left="510" Canvas.Top="831" HorizontalAlignment="Left" VerticalAlignment="Center" Panel.ZIndex="100"/>
             <Label Name="player2NameDisplay" Content="Player1" Foreground="Black" FontSize="25" Canvas.Left="316" Canvas.Top="831" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" Panel.ZIndex="100" RenderTransformOrigin="0.329,0.456"/>

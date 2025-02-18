@@ -61,9 +61,7 @@ namespace TankyShooty
         bool[,] visited = new bool[cellWidth, cellHeight];
         bool[,] vwalls = new bool[cellWidth, cellHeight];
         bool[,] hwalls = new bool[cellWidth, cellHeight];
-        bool canMoveForward = true;
 
-        List<Wall> wallsToRemove = new List<Wall>();
 
 
         public GameWindow()
@@ -71,10 +69,7 @@ namespace TankyShooty
             InitializeComponent();
 
             cellSize = 150;
-            //startXPlayer1 = random.Next(1, cellWidth/2) * cellSize / 2; //nem létezik??
-            //startYPlayer1 = random.Next(1, cellHeight/2) * cellSize / 2; //nem létezik??
-            //startXPlayer2 = random.Next(cellHeight / 2, cellWidth) * cellSize / 2; //nem létezik??
-            //startYPlayer2 = random.Next(cellHeight / 2, cellHeight) * cellSize / 2; //nem létezik??
+
 
             gameTimer.Interval = TimeSpan.FromMilliseconds(20);
             gameTimer.Tick += GameLoop!;
@@ -85,39 +80,15 @@ namespace TankyShooty
             ImageBrush bg = new ImageBrush();
             bg.ImageSource = new BitmapImage(new Uri(Directory.GetCurrentDirectory() + "/img/Canvas-Background.jpg"));
             bg.TileMode = TileMode.None;
-            //bg.Viewport = new Rect(0, 0, 0.15, 0.15);
-            //bg.ViewportUnits = BrushMappingMode.RelativeToBoundingBox;
             bg.Stretch = Stretch.Fill;
             MyCanvas.Background = bg;
-
-
-
-
-
-
 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
-           
-
             height = Convert.ToInt32(MyCanvas.ActualHeight);
             width = Convert.ToInt32(MyCanvas.ActualWidth);
-            //MyCanvas.Width = cellWidth * cellSize;
-            //this.Width = MyCanvas.Width;
-
-            //ImageBrush backgroundBrush = new ImageBrush();
-            //backgroundBrush.ImageSource = new BitmapImage(new Uri("img/backgroung.jpg", UriKind.Relative));
-            //backgroundBrush.TileMode = TileMode.Tile;
-            //backgroundBrush.Viewport = new Rect(0, 0, 626, 566); // Adjust tile size
-            //backgroundBrush.ViewportUnits = BrushMappingMode.Absolute;
-            //backgroundBrush.Stretch = Stretch.None;
-
-            //MyCanvas.Background = backgroundBrush;     
-
-
 
             for (int i = 0; i < cellWidth; i++)
             {
@@ -128,8 +99,8 @@ namespace TankyShooty
                     visited[i, j] = false;
                 }
             }
-            AldousBroder();
 
+            GenerateMaze();
 
             for (int i = 0; i < cellWidth; i++)
             {
@@ -156,10 +127,9 @@ namespace TankyShooty
 
         }
 
-
         private void GameLoop(object sender, EventArgs e)
         {
-            rotation.Content = GameData.Skin1;
+            //rotation.Content = GameData.Skin1;
             player1Hitbox = new Rect(Canvas.GetLeft(Player1), Canvas.GetTop(Player1), Player1.Width, Player1.Height);
             player2Hitbox = new Rect(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), Player2.Width, Player2.Height);
 
@@ -200,7 +170,6 @@ namespace TankyShooty
                     player1NameDisplay.Content = player1Name;
                     player2NameDisplay.Content = player2Name;
                 }
-                
             }
             else
             {
@@ -225,7 +194,6 @@ namespace TankyShooty
 
                     player1NameDisplay.Content = player1Name;
                     player2NameDisplay.Content = player2Name;
-
                 }
                 
                 if (lines.Count > 0)
@@ -283,17 +251,9 @@ namespace TankyShooty
                     player1NameDisplay.Content = player1Name;
                     player2NameDisplay.Content = player2Name;
                 }
-
             }
-            //rotation.Content = GetRectangleQuadrant(rectangleRotatePlayer1.Angle) + " - " + GetRectangleQuadrant(rectangleRotatePlayer2.Angle);
+
             scoreText.Content = $"{Score.Scores[0]} - {Score.Scores[1]}";
-            this.Title = $"{player1Name} - {Score.Scores[0]}, {player2Name} - {Score.Scores[1]}";
-            //rotation.Content = bullets.Count;
-            //rotation.Content = Canvas.GetLeft(Player1) ;
-
-
-            
-
 
             if (moveForwardPlayer1 == true)
             {
@@ -304,7 +264,6 @@ namespace TankyShooty
   
             }
 
-
             if (moveBackwardPlayer1 == true)
             {
                 if (CanMoveBackward(Player1, rectangleRotatePlayer1, player1Hitbox))
@@ -313,18 +272,15 @@ namespace TankyShooty
                 }  
             }
 
-
             if (rotateLeftPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, false, rotateSpeed);
             }
 
-
             if (rotateRightPlayer1 == true)
             {
                 RotatePlayer(rectangleRotatePlayer1, true, rotateSpeed);
             }
-
 
             if (moveForwardPlayer2 == true)
             {
@@ -333,6 +289,7 @@ namespace TankyShooty
                     MovePlayer(Player2, rectangleRotatePlayer2, true);
                 }
             }
+
             if (moveBackwardPlayer2 == true)
             {
                 if (CanMoveBackward(Player2, rectangleRotatePlayer2, player2Hitbox))
@@ -345,11 +302,11 @@ namespace TankyShooty
             {
                 RotatePlayer(rectangleRotatePlayer2, false, rotateSpeed);
             }
+
             if (rotateRightPlayer2 == true)
             {
                 RotatePlayer(rectangleRotatePlayer2, true, rotateSpeed);
             }
-
 
             //foreach (var x in MyCanvas.Children.OfType<System.Windows.Shapes.Rectangle>())
             //{
@@ -375,8 +332,6 @@ namespace TankyShooty
 
             foreach (var bullet in bullets)
             {
-
-
                 double angle = bullet.starterAngle;
 
                 double angleInRadians = angle * (Math.PI / 180);
@@ -431,13 +386,6 @@ namespace TankyShooty
             {
                 bullets.Remove(bullet);
             }
-            //foreach (var wall in wallsToRemove)
-            //{
-            //    walls.Remove(wall);
-            //}
-
-
-
 
         }
 
@@ -464,6 +412,7 @@ namespace TankyShooty
             // Return the new rotated Rect
             return new Rect(newX, newY, rect.Width, rect.Height);
         }
+
         private bool CanMoveForward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform, Rect hitbox)
         {
             foreach (var wall in walls)
@@ -582,15 +531,14 @@ namespace TankyShooty
                     }
                 }
             }
-            return true;
 
+            return true;
         }
 
         private bool CanMoveBackward(System.Windows.Shapes.Rectangle player, RotateTransform rotateTransform, Rect hitbox)
         {
             foreach (var wall in walls)
             {
-
                 if (hitbox.IntersectsWith(wall.Hitbox))
                 {
                     if (wall.isVertical) //VERTIVAL WALL
@@ -705,55 +653,40 @@ namespace TankyShooty
                     }
                 }
             }
-            return true;
 
+            return true;
         }
 
         private void Die()
         {
-
             var newWindow = new GameWindow();
             this.Hide();
             this.Close();
             newWindow.Show();
+
         }
-
-
 
         private void MovePlayer(System.Windows.Shapes.Rectangle player,RotateTransform rotateTransform, bool forward)
         {
-            
             double angle = rotateTransform.Angle;
-
             double angleInRadians = angle * (Math.PI / 180);
 
-            double deltaX;
-            double deltaY;
-
-            
-                deltaX = Math.Cos(angleInRadians) * playerSpeed;
-                deltaY = Math.Sin(angleInRadians) * playerSpeed;
-
-
-            
+            double deltaX = Math.Cos(angleInRadians) * playerSpeed;
+            double deltaY = Math.Sin(angleInRadians) * playerSpeed;
 
             double currentLeft = Canvas.GetLeft(player);
             double currentTop = Canvas.GetTop(player);
 
-            
-                if (forward)
-                {
-                    Canvas.SetLeft(player, currentLeft + deltaX);
-                    Canvas.SetTop(player, currentTop + deltaY);
-                }
-                else
-                {
-                    Canvas.SetLeft(player, currentLeft - deltaX);
-                    Canvas.SetTop(player, currentTop - deltaY);
-                }
-
-            
-
+            if (forward)
+            {
+                Canvas.SetLeft(player, currentLeft + deltaX);
+                Canvas.SetTop(player, currentTop + deltaY);
+            }
+            else
+            {
+                Canvas.SetLeft(player, currentLeft - deltaX);
+                Canvas.SetTop(player, currentTop - deltaY);
+            }
 
         }
 
@@ -762,7 +695,6 @@ namespace TankyShooty
             if (direction_positive) rotateTransform.Angle += rotateSpeed;
             else rotateTransform.Angle -= rotateSpeed;
         }
-
 
         private void ResetPlayers(double angle, double angle2) 
         {
@@ -776,14 +708,11 @@ namespace TankyShooty
 
         private void RemoveBullets()
         {
-
-            
             foreach (var bullet in bullets)
             {
                 MyCanvas.Children.Remove(bullet.rectangle);
                 bulletsToRemove.Add(bullet);
             }
-            
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -814,7 +743,6 @@ namespace TankyShooty
             {
                 moveBackwardPlayer2 = true;
             }
-
             if (e.Key == Key.A)
             {
                 rotateLeftPlayer2 = true;
@@ -823,8 +751,6 @@ namespace TankyShooty
             {
                 rotateRightPlayer2 = true;
             }
-
-
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
@@ -854,7 +780,6 @@ namespace TankyShooty
             {
                 moveBackwardPlayer2 = false;
             }
-
             if (e.Key == Key.A)
             {
                 rotateLeftPlayer2 = false;
@@ -895,8 +820,6 @@ namespace TankyShooty
                     Fill = Brushes.White,
                     Stroke = Brushes.Red,
                 };
-
-
 
                 Canvas.SetLeft(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[0] - (5 / 2));
                 Canvas.SetTop(newBulletPlayer2, GetMiddleOfFrontEdge(Canvas.GetLeft(Player2), Canvas.GetTop(Player2), 50.0, 50.0, rectangleRotatePlayer2.Angle)[1]);
@@ -952,9 +875,7 @@ namespace TankyShooty
             }
         }
 
-
-
-        void AldousBroder()
+        void GenerateMaze()
         {
             int[] p = { 0, 0 };
             visit(p);

@@ -27,6 +27,7 @@ namespace TankyShooty
         public int y1 { get; set; }
         public int x2 { get; set; }
         public int y2 { get; set; }
+
         public SolidColorBrush color { get; set; }
 
         public Wall(int x1, int y1, int x2, int y2, byte? g = null)
@@ -35,7 +36,7 @@ namespace TankyShooty
             this.y1 = y1;
             this.x2 = x2;
             this.y2 = y2;
-            if (g == null) { g = (byte)random.Next(40, 180); }
+            if (g == null) { g = (byte)random.Next(40, 120); }
             color = new SolidColorBrush(System.Windows.Media.Color.FromRgb(g.Value, g.Value, g.Value));
         }
 
