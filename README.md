@@ -10,11 +10,11 @@
 ## Látványdizájn
 
 > Főmenü 3 lehetőséggel
-![főmenü](https://github.com/sukebenedek/TankyShooty/blob/main/f%C5%91men%C3%BC.png?raw=true)
+![főmenü](https://raw.githubusercontent.com/sukebenedek/TankyShooty/refs/heads/main/TankyShooty/TankyShooty/img/plans/f%C5%91men%C3%BC.png)
 > A karakterválasztó menü, széles karakterrepertoárral
-![kosztümizációs menü](https://github.com/sukebenedek/TankyShooty/blob/main/l%C3%A1tv%C3%A1nyterv%20tanky%20shooty.png?raw=true)
+![kosztümizációs menü](https://raw.githubusercontent.com/sukebenedek/TankyShooty/refs/heads/main/TankyShooty/TankyShooty/img/plans/l%C3%A1tv%C3%A1nyterv%20tanky%20shooty.png)
 > Maga a játékmenet
-![játékmenet](https://github.com/sukebenedek/TankyShooty/blob/main/plan.png?raw=true)
+![játékmenet](https://raw.githubusercontent.com/sukebenedek/TankyShooty/refs/heads/main/TankyShooty/TankyShooty/img/plans/plan.png)
 
 ## Alkotók
 
